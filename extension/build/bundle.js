@@ -59,6 +59,10 @@ var app = (function () {
     function space() {
         return text(' ');
     }
+    function listen(node, event, handler, options) {
+        node.addEventListener(event, handler, options);
+        return () => node.removeEventListener(event, handler, options);
+    }
     function attr(node, attribute, value) {
         if (value == null)
             node.removeAttribute(attribute);
@@ -296,12 +300,32 @@ var app = (function () {
         dispatch_dev('SvelteDOMRemove', { node });
         detach(node);
     }
+    function listen_dev(node, event, handler, options, has_prevent_default, has_stop_propagation) {
+        const modifiers = options === true ? ['capture'] : options ? Array.from(Object.keys(options)) : [];
+        if (has_prevent_default)
+            modifiers.push('preventDefault');
+        if (has_stop_propagation)
+            modifiers.push('stopPropagation');
+        dispatch_dev('SvelteDOMAddEventListener', { node, event, handler, modifiers });
+        const dispose = listen(node, event, handler, options);
+        return () => {
+            dispatch_dev('SvelteDOMRemoveEventListener', { node, event, handler, modifiers });
+            dispose();
+        };
+    }
     function attr_dev(node, attribute, value) {
         attr(node, attribute, value);
         if (value == null)
             dispatch_dev('SvelteDOMRemoveAttribute', { node, attribute });
         else
             dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
+    }
+    function set_data_dev(text, data) {
+        data = '' + data;
+        if (text.wholeText === data)
+            return;
+        dispatch_dev('SvelteDOMSetData', { node: text, data });
+        text.data = data;
     }
     function validate_each_argument(arg) {
         if (typeof arg !== 'string' && !(arg && typeof arg === 'object' && 'length' in arg)) {
@@ -346,20 +370,20 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[2] = list[i][0];
-    	child_ctx[3] = list[i][1];
+    	child_ctx[7] = list[i][0];
+    	child_ctx[8] = list[i][1];
     	return child_ctx;
     }
 
-    // (16:16) {#each Object.entries(urlToFolderObj) as [key, value]}
+    // (51:16) {#each Object.entries(urlToFolderObj) as [key, value]}
     function create_each_block(ctx) {
     	let div1;
     	let span0;
-    	let t0_value = /*key*/ ctx[2] + "";
+    	let t0_value = /*key*/ ctx[7] + "";
     	let t0;
     	let t1;
     	let span1;
-    	let t2_value = /*value*/ ctx[3] + "";
+    	let t2_value = /*value*/ ctx[8] + "";
     	let t2;
     	let t3;
     	let div0;
@@ -370,6 +394,16 @@ var app = (function () {
     	let button1;
     	let img1;
     	let img1_src_value;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[4](/*key*/ ctx[7]);
+    	}
+
+    	function click_handler_1() {
+    		return /*click_handler_1*/ ctx[5](/*key*/ ctx[7]);
+    	}
 
     	const block = {
     		c: function create() {
@@ -386,24 +420,24 @@ var app = (function () {
     			t4 = space();
     			button1 = element("button");
     			img1 = element("img");
-    			attr_dev(span0, "class", "item-title svelte-pvx9bh");
-    			add_location(span0, file, 17, 24, 539);
-    			attr_dev(span1, "class", "item-subtitle svelte-pvx9bh");
-    			add_location(span1, file, 18, 24, 601);
+    			attr_dev(span0, "class", "item-title svelte-4lnbsf");
+    			add_location(span0, file, 52, 24, 1831);
+    			attr_dev(span1, "class", "item-subtitle svelte-4lnbsf");
+    			add_location(span1, file, 53, 24, 1894);
     			if (!src_url_equal(img0.src, img0_src_value = "./../icons/edit.svg")) attr_dev(img0, "src", img0_src_value);
     			attr_dev(img0, "alt", "edit");
-    			add_location(img0, file, 21, 33, 806);
-    			attr_dev(button0, "class", "item-btn btn btn-primary btn-sm svelte-pvx9bh");
-    			add_location(button0, file, 20, 28, 725);
+    			add_location(img0, file, 60, 33, 2284);
+    			attr_dev(button0, "class", "item-btn btn btn-primary btn-sm svelte-4lnbsf");
+    			add_location(button0, file, 55, 28, 2020);
     			if (!src_url_equal(img1.src, img1_src_value = "./../icons/delete.svg")) attr_dev(img1, "src", img1_src_value);
     			attr_dev(img1, "alt", "delete");
-    			add_location(img1, file, 27, 33, 1101);
-    			attr_dev(button1, "class", "item-btn btn btn-danger btn-sm svelte-pvx9bh");
-    			add_location(button1, file, 26, 28, 1021);
-    			attr_dev(div0, "class", "item-btn-group svelte-pvx9bh");
-    			add_location(div0, file, 19, 24, 668);
-    			attr_dev(div1, "class", "row-item svelte-pvx9bh");
-    			add_location(div1, file, 16, 20, 492);
+    			add_location(img1, file, 70, 33, 2769);
+    			attr_dev(button1, "class", "item-btn btn btn-danger btn-sm svelte-4lnbsf");
+    			add_location(button1, file, 65, 28, 2504);
+    			attr_dev(div0, "class", "item-btn-group svelte-4lnbsf");
+    			add_location(div0, file, 54, 24, 1962);
+    			attr_dev(div1, "class", "row-item svelte-4lnbsf");
+    			add_location(div1, file, 51, 20, 1783);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -419,10 +453,25 @@ var app = (function () {
     			append_dev(div0, t4);
     			append_dev(div0, button1);
     			append_dev(button1, img1);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(button0, "click", click_handler, false, false, false),
+    					listen_dev(button1, "click", click_handler_1, false, false, false)
+    				];
+
+    				mounted = true;
+    			}
     		},
-    		p: noop,
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*urlToFolderObj*/ 1 && t0_value !== (t0_value = /*key*/ ctx[7] + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*urlToFolderObj*/ 1 && t2_value !== (t2_value = /*value*/ ctx[8] + "")) set_data_dev(t2, t2_value);
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div1);
+    			mounted = false;
+    			run_all(dispose);
     		}
     	};
 
@@ -430,7 +479,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(16:16) {#each Object.entries(urlToFolderObj) as [key, value]}",
+    		source: "(51:16) {#each Object.entries(urlToFolderObj) as [key, value]}",
     		ctx
     	});
 
@@ -477,6 +526,8 @@ var app = (function () {
     	let h22;
     	let t17;
     	let div6;
+    	let mounted;
+    	let dispose;
     	let each_value = Object.entries(/*urlToFolderObj*/ ctx[0]);
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -534,57 +585,59 @@ var app = (function () {
     			h22.textContent = "Rules priority";
     			t17 = space();
     			div6 = element("div");
-    			add_location(h1, file, 10, 4, 263);
-    			add_location(h20, file, 13, 12, 348);
-    			attr_dev(input0, "class", "form-control form-control-sm item-title svelte-pvx9bh");
+    			add_location(h1, file, 45, 4, 1549);
+    			add_location(h20, file, 48, 12, 1636);
+    			attr_dev(input0, "id", "urlInput");
+    			attr_dev(input0, "class", "form-control form-control-sm item-title svelte-4lnbsf");
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "https://example.com/foo");
-    			add_location(input0, file, 36, 20, 1433);
-    			attr_dev(input1, "class", "form-control form-control-sm item-subtitle svelte-pvx9bh");
+    			add_location(input0, file, 79, 20, 3110);
+    			attr_dev(input1, "id", "folderInput");
+    			attr_dev(input1, "class", "form-control form-control-sm item-subtitle svelte-4lnbsf");
     			attr_dev(input1, "type", "text");
     			attr_dev(input1, "placeholder", "path/to/destination/folder");
-    			add_location(input1, file, 41, 20, 1653);
+    			add_location(input1, file, 85, 20, 3374);
     			if (!src_url_equal(img0.src, img0_src_value = "./../icons/add.svg")) attr_dev(img0, "src", img0_src_value);
     			attr_dev(img0, "alt", "add");
-    			add_location(img0, file, 47, 25, 1952);
-    			attr_dev(button0, "class", "item-btn btn btn-primary btn-sm svelte-pvx9bh");
-    			add_location(button0, file, 46, 20, 1879);
-    			attr_dev(div0, "class", "row-item svelte-pvx9bh");
-    			add_location(div0, file, 35, 16, 1390);
-    			attr_dev(div1, "class", "box svelte-pvx9bh");
-    			add_location(div1, file, 14, 12, 383);
-    			add_location(h21, file, 51, 12, 2079);
-    			attr_dev(span0, "class", "item-title svelte-pvx9bh");
-    			add_location(span0, file, 54, 20, 2196);
-    			attr_dev(span1, "class", "item-subtitle svelte-pvx9bh");
-    			add_location(span1, file, 55, 20, 2271);
+    			add_location(img0, file, 94, 25, 3800);
+    			attr_dev(button0, "class", "item-btn btn btn-primary btn-sm svelte-4lnbsf");
+    			add_location(button0, file, 91, 20, 3647);
+    			attr_dev(div0, "class", "row-item svelte-4lnbsf");
+    			add_location(div0, file, 78, 16, 3066);
+    			attr_dev(div1, "class", "box svelte-4lnbsf");
+    			add_location(div1, file, 49, 12, 1672);
+    			add_location(h21, file, 98, 12, 3931);
+    			attr_dev(span0, "class", "item-title svelte-4lnbsf");
+    			add_location(span0, file, 101, 20, 4051);
+    			attr_dev(span1, "class", "item-subtitle svelte-4lnbsf");
+    			add_location(span1, file, 102, 20, 4127);
     			if (!src_url_equal(img1.src, img1_src_value = "./../icons/edit.svg")) attr_dev(img1, "src", img1_src_value);
     			attr_dev(img1, "alt", "edit");
-    			add_location(img1, file, 58, 29, 2473);
-    			attr_dev(button1, "class", "item-btn btn btn-primary btn-sm svelte-pvx9bh");
-    			add_location(button1, file, 57, 24, 2396);
+    			add_location(img1, file, 105, 29, 4332);
+    			attr_dev(button1, "class", "item-btn btn btn-primary btn-sm svelte-4lnbsf");
+    			add_location(button1, file, 104, 24, 4254);
     			if (!src_url_equal(img2.src, img2_src_value = "./../icons/delete.svg")) attr_dev(img2, "src", img2_src_value);
     			attr_dev(img2, "alt", "delete");
-    			add_location(img2, file, 64, 29, 2744);
-    			attr_dev(button2, "class", "item-btn btn btn-danger btn-sm svelte-pvx9bh");
-    			add_location(button2, file, 63, 24, 2668);
-    			attr_dev(div2, "class", "item-btn-group svelte-pvx9bh");
-    			add_location(div2, file, 56, 20, 2343);
-    			attr_dev(div3, "class", "row-item svelte-pvx9bh");
-    			add_location(div3, file, 53, 16, 2153);
-    			attr_dev(div4, "class", "box svelte-pvx9bh");
-    			add_location(div4, file, 52, 12, 2119);
-    			attr_dev(div5, "class", "col1 svelte-pvx9bh");
-    			add_location(div5, file, 12, 8, 317);
-    			add_location(h22, file, 74, 12, 3042);
-    			attr_dev(div6, "class", "box svelte-pvx9bh");
-    			add_location(div6, file, 75, 12, 3078);
-    			attr_dev(div7, "class", "col2 svelte-pvx9bh");
-    			add_location(div7, file, 73, 8, 3011);
-    			attr_dev(div8, "class", "container svelte-pvx9bh");
-    			add_location(div8, file, 11, 4, 285);
-    			attr_dev(main, "class", "svelte-pvx9bh");
-    			add_location(main, file, 9, 0, 252);
+    			add_location(img2, file, 111, 29, 4609);
+    			attr_dev(button2, "class", "item-btn btn btn-danger btn-sm svelte-4lnbsf");
+    			add_location(button2, file, 110, 24, 4532);
+    			attr_dev(div2, "class", "item-btn-group svelte-4lnbsf");
+    			add_location(div2, file, 103, 20, 4200);
+    			attr_dev(div3, "class", "row-item svelte-4lnbsf");
+    			add_location(div3, file, 100, 16, 4007);
+    			attr_dev(div4, "class", "box svelte-4lnbsf");
+    			add_location(div4, file, 99, 12, 3972);
+    			attr_dev(div5, "class", "col svelte-4lnbsf");
+    			add_location(div5, file, 47, 8, 1605);
+    			add_location(h22, file, 121, 12, 4916);
+    			attr_dev(div6, "class", "box svelte-4lnbsf");
+    			add_location(div6, file, 122, 12, 4953);
+    			attr_dev(div7, "class", "col svelte-4lnbsf");
+    			add_location(div7, file, 120, 8, 4885);
+    			attr_dev(div8, "class", "container svelte-4lnbsf");
+    			add_location(div8, file, 46, 4, 1572);
+    			attr_dev(main, "class", "svelte-4lnbsf");
+    			add_location(main, file, 44, 0, 1537);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -631,9 +684,14 @@ var app = (function () {
     			append_dev(div7, h22);
     			append_dev(div7, t17);
     			append_dev(div7, div6);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button0, "click", /*addURLToFolderObj*/ ctx[1], false, false, false);
+    				mounted = true;
+    			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*Object, urlToFolderObj*/ 1) {
+    			if (dirty & /*deleteURLToFolderObj, Object, urlToFolderObj, editURLToFolderObj*/ 13) {
     				each_value = Object.entries(/*urlToFolderObj*/ ctx[0]);
     				validate_each_argument(each_value);
     				let i;
@@ -662,6 +720,8 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
     			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -686,13 +746,62 @@ var app = (function () {
     	};
 
     	let filetypeToFolderObj = {};
+
+    	function addURLToFolderObj() {
+    		let urlInput = document.getElementById("urlInput");
+    		let folderInput = document.getElementById("folderInput");
+    		let url = urlInput.value;
+    		let folder = folderInput.value;
+
+    		if (url.length > 0 && folder.length > 0) {
+    			$$invalidate(0, urlToFolderObj[url] = folder, urlToFolderObj);
+    			$$invalidate(0, urlToFolderObj);
+    			urlInput.value = "";
+    			folderInput.value = "";
+    		}
+    	}
+
+    	function deleteURLToFolderObj(key) {
+    		let yes = confirm("Are you sure you want to delete the following rule?\n" + "URL: " + key + "\n" + "Folder: " + urlToFolderObj[key]);
+
+    		if (yes) {
+    			delete urlToFolderObj[key];
+    			$$invalidate(0, urlToFolderObj);
+    		}
+    	}
+
+    	function editURLToFolderObj(key) {
+    		let newURL = prompt("Edit URL", key);
+    		let newFolder = prompt("Edit Folder", urlToFolderObj[key]);
+
+    		if (newURL.length > 0 && newFolder.length > 0) {
+    			if (newURL != key) delete urlToFolderObj[key];
+    			$$invalidate(0, urlToFolderObj[newURL] = newFolder, urlToFolderObj);
+    			$$invalidate(0, urlToFolderObj);
+    		}
+    	}
+
     	const writable_props = [];
 
     	Object_1.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ urlToFolderObj, filetypeToFolderObj });
+    	const click_handler = key => {
+    		editURLToFolderObj(key);
+    	};
+
+    	const click_handler_1 = key => {
+    		deleteURLToFolderObj(key);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		urlToFolderObj,
+    		filetypeToFolderObj,
+    		addURLToFolderObj,
+    		deleteURLToFolderObj,
+    		editURLToFolderObj
+    	});
 
     	$$self.$inject_state = $$props => {
     		if ('urlToFolderObj' in $$props) $$invalidate(0, urlToFolderObj = $$props.urlToFolderObj);
@@ -703,7 +812,14 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [urlToFolderObj];
+    	return [
+    		urlToFolderObj,
+    		addURLToFolderObj,
+    		deleteURLToFolderObj,
+    		editURLToFolderObj,
+    		click_handler,
+    		click_handler_1
+    	];
     }
 
     class App extends SvelteComponentDev {
@@ -723,7 +839,7 @@ var app = (function () {
     const app = new App({
     	target: document.body,
     	props: {
-    		name: 'world'
+    		name: 'Delta'
     	}
     });
 
