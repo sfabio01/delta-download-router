@@ -1,44 +1,64 @@
 <script>
     import "./style.css";
-    let urlToFolderObj = {
-        "https://webeep.polimi.it/course/view.php?id=921":
-            "downloads/uni/analisi",
+    import { fileTypes } from "./types";
+
+    let objs = {
         "https://webee.polimi.it/chimica": "downloads/uni/chimica",
+        documents: "download/doc",
+        "https://webee.polimi.it/elettronica": "downloads/uni/elettronica",
+        "https://webee.polimi.it/fisica": "downloads/uni/fisica",
+        images: "download/img",
     };
+    let array = [];
+    let urlToFolderArr = [];
+    let filetypeToFolderArr = [];
     let filetypeToFolderObj = {};
-    function addURLToFolderObj() {
+
+    $: array = Object.entries(objs);
+    $: urlToFolderArr = array.filter(
+        ([key, _]) => !fileTypes.hasOwnProperty(key)
+    );
+    $: filetypeToFolderArr = array.filter(([key, _]) =>
+        fileTypes.hasOwnProperty(key)
+    );
+    $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
+
+    function addRule() {
         let urlInput = document.getElementById("urlInput");
         let folderInput = document.getElementById("folderInput");
         let url = urlInput.value;
         let folder = folderInput.value;
         if (url.length > 0 && folder.length > 0) {
-            urlToFolderObj[url] = folder;
-            urlToFolderObj = urlToFolderObj;
+            objs[url] = folder;
+            objs = objs;
             urlInput.value = "";
             folderInput.value = "";
         }
     }
-    function deleteURLToFolderObj(key) {
+    function deleteRule(key) {
         let yes = confirm(
             "Are you sure you want to delete the following rule?\n" +
                 "URL: " +
                 key +
                 "\n" +
                 "Folder: " +
-                urlToFolderObj[key]
+                objs[key]
         );
         if (yes) {
-            delete urlToFolderObj[key];
-            urlToFolderObj = urlToFolderObj;
+            delete objs[key];
+            objs = objs;
         }
     }
-    function editURLToFolderObj(key) {
-        let newURL = prompt("Edit URL", key);
-        let newFolder = prompt("Edit Folder", urlToFolderObj[key]);
+    function editRule(key, canEditKey) {
+        let newURL = key;
+        if (canEditKey) {
+            newURL = prompt("Edit URL", key);
+        }
+        let newFolder = prompt("URL: " + newURL + "\nEdit Folder", objs[key]);
         if (newURL.length > 0 && newFolder.length > 0) {
-            if (newURL != key) delete urlToFolderObj[key];
-            urlToFolderObj[newURL] = newFolder;
-            urlToFolderObj = urlToFolderObj;
+            if (newURL != key) delete objs[key];
+            objs[newURL] = newFolder;
+            objs = objs;
         }
     }
 </script>
@@ -49,14 +69,14 @@
         <div class="col1">
             <h2>URL to folder</h2>
             <div class="box">
-                {#each Object.entries(urlToFolderObj) as [key, value]}
+                {#each urlToFolderArr as [key, value]}
                     <div class="row-item">
                         <span class="item-title">{key}</span>
                         <span class="item-subtitle">{value}</span>
                         <div class="item-btn-group">
                             <button
                                 on:click={() => {
-                                    editURLToFolderObj(key);
+                                    editRule(key, true);
                                 }}
                                 class="item-btn btn btn-primary btn-sm"
                                 ><img
@@ -66,7 +86,7 @@
                             >
                             <button
                                 on:click={() => {
-                                    deleteURLToFolderObj(key);
+                                    deleteRule(key);
                                 }}
                                 class="item-btn btn btn-danger btn-sm"
                                 ><img
@@ -91,7 +111,7 @@
                         placeholder="path/to/destination/folder"
                     />
                     <button
-                        on:click={addURLToFolderObj}
+                        on:click={addRule}
                         class="item-btn btn btn-primary btn-sm"
                         ><img src="./../icons/add.svg" alt="add" /></button
                     >
@@ -99,24 +119,36 @@
             </div>
             <h2>Filetype to folder</h2>
             <div class="box">
-                <div class="row-item">
-                    <span class="item-title">Images (png, jpg, svg)</span>
-                    <span class="item-subtitle">downloads/images</span>
-                    <div class="item-btn-group">
-                        <button class="item-btn btn btn-primary btn-sm"
-                            ><img
-                                src="./../icons/edit.svg"
-                                alt="edit"
-                            /></button
+                {#each Object.entries(fileTypes) as [key, value]}
+                    <div class="row-item">
+                        <span class="item-title capitalize">{key}</span>
+                        <span class="item-subtitle"
+                            >{#if filetypeToFolderObj[key]}{filetypeToFolderObj[
+                                    key
+                                ]}{:else}Rule not defined{/if}</span
                         >
-                        <button class="item-btn btn btn-danger btn-sm"
-                            ><img
-                                src="./../icons/delete.svg"
-                                alt="delete"
-                            /></button
-                        >
+                        <div class="item-btn-group">
+                            <button
+                                on:click={() => {
+                                    editRule(key, false);
+                                }}
+                                class="item-btn btn btn-primary btn-sm"
+                                ><img
+                                    src="./../icons/edit.svg"
+                                    alt="edit"
+                                /></button
+                            >
+                            <button
+                                on:click={() => deleteRule(key)}
+                                class="item-btn btn btn-danger btn-sm"
+                                ><img
+                                    src="./../icons/delete.svg"
+                                    alt="delete"
+                                /></button
+                            >
+                        </div>
                     </div>
-                </div>
+                {/each}
             </div>
         </div>
         <div class="col1">

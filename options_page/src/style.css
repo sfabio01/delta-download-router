@@ -59,3 +59,6 @@ main {
     border-radius: 16px;
     padding: 8px;
 }
+.capitalize {
+    text-transform: capitalize;
+}
