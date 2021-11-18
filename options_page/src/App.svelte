@@ -44,8 +44,8 @@
 
 <main>
     <h1>Settings</h1>
-    <div class="container">
-        <div class="col">
+    <div class="container1">
+        <div class="col1">
             <h2>URL to folder</h2>
             <div class="box">
                 {#each Object.entries(urlToFolderObj) as [key, value]}
@@ -118,7 +118,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col1">
             <h2>Rules priority</h2>
             <div class="box" />
         </div>
@@ -169,7 +169,7 @@
         align-items: stretch;
         width: 100%;
     }
-    .container {
+    .container1 {
         display: grid;
         width: 100%;
         grid-template-columns: 1fr 1fr;
@@ -177,7 +177,7 @@
         margin: 0px;
         padding: 0px;
     }
-    .col {
+    .col1 {
         display: flex;
         flex-direction: column;
     }
