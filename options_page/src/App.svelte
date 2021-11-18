@@ -2,6 +2,8 @@
     import "./style.css";
     import { fileTypes } from "./types";
 
+    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+
     let objs = {
         "https://webee.polimi.it/chimica": "downloads/uni/chimica",
         documents: "download/doc",
@@ -28,11 +30,13 @@
         let folderInput = document.getElementById("folderInput");
         let url = urlInput.value;
         let folder = folderInput.value;
-        if (url.length > 0 && folder.length > 0) {
+        if (url.length > 0 && folder.length > 0 && urlRegex.test(url)) {
             objs[url] = folder;
             objs = objs;
             urlInput.value = "";
             folderInput.value = "";
+        } else {
+            alert("Invalid URL or folder name");
         }
     }
     function deleteRule(key) {
@@ -53,12 +57,24 @@
         let newURL = key;
         if (canEditKey) {
             newURL = prompt("Edit URL", key);
+            if (!newURL) {
+                return;
+            }
         }
         let newFolder = prompt("URL: " + newURL + "\nEdit Folder", objs[key]);
-        if (newURL.length > 0 && newFolder.length > 0) {
+        if (!newFolder) {
+            return;
+        }
+        if (
+            newURL.length > 0 &&
+            newFolder.length > 0 &&
+            (!canEditKey || urlRegex.test(newURL))
+        ) {
             if (newURL != key) delete objs[key];
             objs[newURL] = newFolder;
             objs = objs;
+        } else {
+            alert("Invalid URL or folder name");
         }
     }
 </script>
