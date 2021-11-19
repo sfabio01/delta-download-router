@@ -1,6 +1,6 @@
 <script>
     import "./style.css";
-    import { fileTypes } from "./types";
+    import { fileTypes, priorityValueTextMap } from "./types";
 
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
 
@@ -10,20 +10,23 @@
         "https://webee.polimi.it/elettronica": "downloads/uni/elettronica",
         "https://webee.polimi.it/fisica": "downloads/uni/fisica",
         images: "download/img",
+        priorityList: ["urlToFolder", "filetypeToFolder"],
     };
     let array = [];
     let urlToFolderArr = [];
     let filetypeToFolderArr = [];
     let filetypeToFolderObj = {};
+    let priorityList = [];
 
     $: array = Object.entries(objs);
     $: urlToFolderArr = array.filter(
-        ([key, _]) => !fileTypes.hasOwnProperty(key)
+        ([key, _]) => !fileTypes.hasOwnProperty(key) && key != "priorityList"
     );
-    $: filetypeToFolderArr = array.filter(([key, _]) =>
-        fileTypes.hasOwnProperty(key)
+    $: filetypeToFolderArr = array.filter(
+        ([key, _]) => fileTypes.hasOwnProperty(key) && key != "priorityList"
     );
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
+    priorityList = objs["priorityList"];
 
     function addRule() {
         let urlInput = document.getElementById("urlInput");
@@ -84,13 +87,21 @@
             if (isBefore(_el, e.target))
                 e.target.parentNode.insertBefore(_el, e.target);
             else e.target.parentNode.insertBefore(_el, e.target.nextSibling);
-            console.log(_el);
         }
 
         function dragStart(e) {
             e.dataTransfer.effectAllowed = "move";
-            e.dataTransfer.setData("text/plain", null); // Thanks to bqlou for their comment.
+            e.dataTransfer.setData("text/plain", null);
             _el = e.target;
+        }
+        function dragEnd(e) {
+            let list = document.getElementById("priority-list");
+            let listItems = list.getElementsByTagName("li");
+            let newPriorityList = [];
+            for (let item of listItems) {
+                newPriorityList.push(item.ariaValueText);
+            }
+            objs["priorityList"] = newPriorityList;
         }
 
         function isBefore(el1, el2) {
@@ -108,6 +119,7 @@
         for (let sortable of sortables) {
             sortable.addEventListener("dragstart", dragStart);
             sortable.addEventListener("dragover", dragOver);
+            sortable.addEventListener("dragend", dragEnd);
         }
     });
 </script>
@@ -204,20 +216,15 @@
             <h2>Rules priority</h2>
             <div class="box">
                 <ol id="priority-list" style="font-weight: bold;">
-                    <li
-                        id="urlToFolderPriorityItem"
-                        draggable="true"
-                        class="sortable-item"
-                    >
-                        Url to folder
-                    </li>
-                    <li
-                        id="filetypeToFolderPriorityItem"
-                        draggable="true"
-                        class="sortable-item"
-                    >
-                        Filetype to folder
-                    </li>
+                    {#each priorityList as value}
+                        <li
+                            aria-valuetext={value}
+                            draggable="true"
+                            class="sortable-item"
+                        >
+                            {priorityValueTextMap[value]}
+                        </li>
+                    {/each}
                 </ol>
             </div>
         </div>
