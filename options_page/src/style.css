@@ -25,6 +25,11 @@
         "subtitle subtitle btn";
     align-items: center;
     justify-content: space-between;
+    padding: 4px;
+}
+.row-item:hover {
+    background-color: #f0f0f0;
+    border-radius: 8px;
 }
 @media (max-width: 768px) {
     .row-item {
@@ -44,7 +49,7 @@ main {
 .container1 {
     display: grid;
     width: 100%;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     column-gap: 24px;
     margin: 0px;
     padding: 0px;
@@ -61,4 +66,12 @@ main {
 }
 .capitalize {
     text-transform: capitalize;
+}
+.sortable-item {
+    cursor: move;
+    padding: 4px;
+}
+.sortable-item:hover {
+    background-color: #f0f0f0;
+    border-radius: 8px;
 }

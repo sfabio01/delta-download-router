@@ -77,6 +77,39 @@
             alert("Invalid URL or folder name");
         }
     }
+    document.addEventListener("DOMContentLoaded", (event) => {
+        var _el;
+
+        function dragOver(e) {
+            if (isBefore(_el, e.target))
+                e.target.parentNode.insertBefore(_el, e.target);
+            else e.target.parentNode.insertBefore(_el, e.target.nextSibling);
+            console.log(_el);
+        }
+
+        function dragStart(e) {
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", null); // Thanks to bqlou for their comment.
+            _el = e.target;
+        }
+
+        function isBefore(el1, el2) {
+            if (el2.parentNode === el1.parentNode)
+                for (
+                    var cur = el1.previousSibling;
+                    cur && cur.nodeType !== 9;
+                    cur = cur.previousSibling
+                )
+                    if (cur === el2) return true;
+            return false;
+        }
+
+        let sortables = document.getElementsByClassName("sortable-item");
+        for (let sortable of sortables) {
+            sortable.addEventListener("dragstart", dragStart);
+            sortable.addEventListener("dragover", dragOver);
+        }
+    });
 </script>
 
 <main>
@@ -169,7 +202,24 @@
         </div>
         <div class="col1">
             <h2>Rules priority</h2>
-            <div class="box" />
+            <div class="box">
+                <ol id="priority-list" style="font-weight: bold;">
+                    <li
+                        id="urlToFolderPriorityItem"
+                        draggable="true"
+                        class="sortable-item"
+                    >
+                        Url to folder
+                    </li>
+                    <li
+                        id="filetypeToFolderPriorityItem"
+                        draggable="true"
+                        class="sortable-item"
+                    >
+                        Filetype to folder
+                    </li>
+                </ol>
+            </div>
         </div>
     </div>
 </main>
