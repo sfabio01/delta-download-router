@@ -4,19 +4,16 @@
 
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
 
-    let objs = {
-        "https://webee.polimi.it/chimica": "downloads/uni/chimica",
-        documents: "download/doc",
-        "https://webee.polimi.it/elettronica": "downloads/uni/elettronica",
-        "https://webee.polimi.it/fisica": "downloads/uni/fisica",
-        images: "download/img",
-        priorityList: ["urlToFolder", "filetypeToFolder"],
-    };
+    let objs = {};
+
+    // DEBUG:
+    // $: console.log(objs);
+
     let array = [];
     let urlToFolderArr = [];
     let filetypeToFolderArr = [];
     let filetypeToFolderObj = {};
-    let priorityList = [];
+    let priorityList = ["urlToFolder", "filetypeToFolder"];
 
     $: array = Object.entries(objs);
     $: urlToFolderArr = array.filter(
@@ -26,7 +23,17 @@
         ([key, _]) => fileTypes.hasOwnProperty(key) && key != "priorityList"
     );
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
-    priorityList = objs["priorityList"];
+
+    /* --- Initialize objs from storage --- */
+    chrome.storage.local.get(null, function (result) {
+        console.log(result);
+        if (result["priorityList"] == null) {
+            result["priorityList"] = ["urlToFolder", "filetypeToFolder"];
+        }
+        priorityList = result["priorityList"];
+        objs = result;
+    });
+    /* --- --- --- --- --- --- --- --- --- */
 
     function addRule() {
         let urlInput = document.getElementById("urlInput");
@@ -34,10 +41,15 @@
         let url = urlInput.value;
         let folder = folderInput.value;
         if (url.length > 0 && folder.length > 0 && urlRegex.test(url)) {
-            objs[url] = folder;
-            objs = objs;
-            urlInput.value = "";
-            folderInput.value = "";
+            chrome.storage.local.set({ [url]: folder }, function () {
+                // DEBUG:
+                console.log("Rule added: " + { [url]: folder });
+
+                objs[url] = folder;
+                objs = objs;
+                urlInput.value = "";
+                folderInput.value = "";
+            });
         } else {
             alert("Invalid URL or folder name");
         }
@@ -73,13 +85,21 @@
             newFolder.length > 0 &&
             (!canEditKey || urlRegex.test(newURL))
         ) {
-            if (newURL != key) delete objs[key];
-            objs[newURL] = newFolder;
-            objs = objs;
+            if (newURL != key) {
+                chrome.storage.local.set({ [key]: null }, function () {
+                    delete objs[key];
+                });
+            }
+            chrome.storage.local.set({ [newURL]: newFolder }, function () {
+                objs[newURL] = newFolder;
+                objs = objs;
+            });
         } else {
             alert("Invalid URL or folder name");
         }
     }
+
+    /* --- Sortable list config --- */
     document.addEventListener("DOMContentLoaded", (event) => {
         var _el;
 
@@ -101,7 +121,14 @@
             for (let item of listItems) {
                 newPriorityList.push(item.ariaValueText);
             }
-            objs["priorityList"] = newPriorityList;
+
+            chrome.storage.local.set(
+                { priorityList: newPriorityList },
+                function () {
+                    // DEBUG:
+                    console.log("New priority list: " + newPriorityList);
+                }
+            );
         }
 
         function isBefore(el1, el2) {
@@ -122,6 +149,7 @@
             sortable.addEventListener("dragend", dragEnd);
         }
     });
+    /* --- --- --- --- --- --- */
 </script>
 
 <main>
