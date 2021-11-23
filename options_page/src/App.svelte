@@ -24,7 +24,7 @@
     );
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
 
-    /* --- Initialize objs from storage --- */
+    /* --- Init --- */
     chrome.storage.local.get(null, function (result) {
         console.log(result);
         if (result["priorityList"] == null) {
@@ -145,7 +145,15 @@
 </script>
 
 <main>
-    <h1>Settings</h1>
+    <h1>
+        Settings <button
+            on:click={() => {
+                chrome.downloads.showDefaultFolder();
+            }}
+            class="item-btn btn btn-primary btn-sm"
+            ><img src="./../icons/folder.svg" alt="download folder" /></button
+        >
+    </h1>
     <div class="container1">
         <div class="col1">
             <h3>URL to folder</h3>
