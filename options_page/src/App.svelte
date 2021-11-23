@@ -148,7 +148,7 @@
     <h1>Settings</h1>
     <div class="container1">
         <div class="col1">
-            <h2>URL to folder</h2>
+            <h3>URL to folder</h3>
             <div class="box">
                 {#each urlToFolderArr as [key, value]}
                     <div class="row-item">
@@ -198,7 +198,7 @@
                     >
                 </div>
             </div>
-            <h2>Filetype to folder</h2>
+            <h3>Filetype to folder</h3>
             <div class="box">
                 {#each Object.entries(fileTypes) as [key, value]}
                     <div class="row-item">
@@ -233,7 +233,7 @@
             </div>
         </div>
         <div class="col1">
-            <h2>Rules priority</h2>
+            <h3>Rules priority</h3>
             <div class="box">
                 <ol id="priority-list" style="font-weight: bold;">
                     {#each priorityList as value}
@@ -246,6 +246,9 @@
                         </li>
                     {/each}
                 </ol>
+                <p class="hint-text" style="text-align: center;">
+                    Drag the list items to change their priority
+                </p>
             </div>
         </div>
     </div>
