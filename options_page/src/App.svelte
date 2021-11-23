@@ -43,7 +43,7 @@
         if (url.length > 0 && folder.length > 0 && urlRegex.test(url)) {
             chrome.storage.local.set({ [url]: folder }, function () {
                 // DEBUG:
-                console.log("Rule added: " + { [url]: folder });
+                // console.log("Rule added: " + { [url]: folder });
 
                 objs[url] = folder;
                 objs = objs;
@@ -64,8 +64,13 @@
                 objs[key]
         );
         if (yes) {
-            delete objs[key];
-            objs = objs;
+            chrome.storage.local.remove(key, function () {
+                // DEBUG:
+                console.log("Rule deleted: " + key);
+
+                delete objs[key];
+                objs = objs;
+            });
         }
     }
     function editRule(key, canEditKey) {
@@ -86,11 +91,17 @@
             (!canEditKey || urlRegex.test(newURL))
         ) {
             if (newURL != key) {
-                chrome.storage.local.set({ [key]: null }, function () {
+                chrome.storage.local.remove(key, function () {
+                    // DEBUG:
+                    console.log("Rule deleted: " + key);
+
                     delete objs[key];
                 });
             }
             chrome.storage.local.set({ [newURL]: newFolder }, function () {
+                // DEBUG:
+                // console.log("Rule added: " + { [newURL]: newFolder });
+
                 objs[newURL] = newFolder;
                 objs = objs;
             });
