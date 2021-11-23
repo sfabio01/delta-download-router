@@ -43,7 +43,7 @@
         if (url.length > 0 && folder.length > 0 && urlRegex.test(url)) {
             chrome.storage.local.set({ [url]: folder }, function () {
                 // DEBUG:
-                // console.log("Rule added: " + { [url]: folder });
+                // console.log("Rule added: {" + url + ": " + folder + "}");
 
                 objs[url] = folder;
                 objs = objs;
@@ -66,47 +66,28 @@
         if (yes) {
             chrome.storage.local.remove(key, function () {
                 // DEBUG:
-                console.log("Rule deleted: " + key);
+                // console.log("Rule deleted: " + key);
 
                 delete objs[key];
                 objs = objs;
             });
         }
     }
-    function editRule(key, canEditKey) {
-        let newURL = key;
-        if (canEditKey) {
-            newURL = prompt("Edit URL", key);
-            if (!newURL) {
-                return;
-            }
-        }
-        let newFolder = prompt("URL: " + newURL + "\nEdit Folder", objs[key]);
+    function editRule(key) {
+        let newFolder = prompt("URL: " + key + "\nEdit Folder", objs[key]);
         if (!newFolder) {
             return;
         }
-        if (
-            newURL.length > 0 &&
-            newFolder.length > 0 &&
-            (!canEditKey || urlRegex.test(newURL))
-        ) {
-            if (newURL != key) {
-                chrome.storage.local.remove(key, function () {
-                    // DEBUG:
-                    console.log("Rule deleted: " + key);
-
-                    delete objs[key];
-                });
-            }
-            chrome.storage.local.set({ [newURL]: newFolder }, function () {
+        if (key.length > 0 && newFolder.length > 0) {
+            chrome.storage.local.set({ [key]: newFolder }, function () {
                 // DEBUG:
-                // console.log("Rule added: " + { [newURL]: newFolder });
+                // console.log("Rule edited: {" + key + ": " + newFolder + "}");
 
-                objs[newURL] = newFolder;
+                objs[key] = newFolder;
                 objs = objs;
             });
         } else {
-            alert("Invalid URL or folder name");
+            alert("Invalid folder name");
         }
     }
 
@@ -137,7 +118,7 @@
                 { priorityList: newPriorityList },
                 function () {
                     // DEBUG:
-                    console.log("New priority list: " + newPriorityList);
+                    // console.log("New priority list: " + newPriorityList);
                 }
             );
         }
@@ -176,7 +157,7 @@
                         <div class="item-btn-group">
                             <button
                                 on:click={() => {
-                                    editRule(key, true);
+                                    editRule(key);
                                 }}
                                 class="item-btn btn btn-primary btn-sm"
                                 ><img
@@ -230,7 +211,7 @@
                         <div class="item-btn-group">
                             <button
                                 on:click={() => {
-                                    editRule(key, false);
+                                    editRule(key);
                                 }}
                                 class="item-btn btn btn-primary btn-sm"
                                 ><img
