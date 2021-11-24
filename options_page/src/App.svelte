@@ -1,6 +1,6 @@
 <script>
     import "./style.css";
-    import { fileTypes, priorityValueTextMap } from "./types";
+    import { fileTypes, priorityValueTextMap, specialKeys } from "./types";
 
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
 
@@ -17,10 +17,12 @@
 
     $: array = Object.entries(objs);
     $: urlToFolderArr = array.filter(
-        ([key, _]) => !fileTypes.hasOwnProperty(key) && key != "priorityList"
+        ([key, _]) =>
+            !fileTypes.hasOwnProperty(key) && specialKeys.indexOf(key) == -1
     );
     $: filetypeToFolderArr = array.filter(
-        ([key, _]) => fileTypes.hasOwnProperty(key) && key != "priorityList"
+        ([key, _]) =>
+            fileTypes.hasOwnProperty(key) && specialKeys.indexOf(key) == -1
     );
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
 
@@ -257,6 +259,39 @@
                 <p class="hint-text" style="text-align: center;">
                     Drag the list items to change their priority
                 </p>
+            </div>
+            <h3>Default download folder</h3>
+            <div class="box">
+                <div class="row-item">
+                    <span class="item-title">Default download folder</span>
+                    <span class="item-subtitle"
+                        >{#if objs["defaultDownloadFolder"]}{objs[
+                                "defaultDownloadFolder"
+                            ]}{:else}Not defined{/if}</span
+                    >
+                    <div class="item-btn-group">
+                        <button
+                            on:click={() => {
+                                editRule("defaultDownloadFolder");
+                            }}
+                            class="item-btn btn btn-primary btn-sm"
+                            ><img
+                                src="./../icons/edit.svg"
+                                alt="edit"
+                            /></button
+                        >
+                    </div>
+                </div>
+                {#if !objs["defaultDownloadFolder"]}
+                    <div
+                        class="alert alert-warning"
+                        style="border-radius: 8px;"
+                        role="alert"
+                    >
+                        It's important you set the default download folder in
+                        case no rule matches.
+                    </div>
+                {/if}
             </div>
         </div>
     </div>

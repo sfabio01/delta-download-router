@@ -65,3 +65,5 @@ export const priorityValueTextMap = {
     "urlToFolder": "URL to folder",
     "filetypeToFolder": "Filetype to folder",
 }
+
+export const specialKeys = ["priorityList", "defaultDownloadFolder"];

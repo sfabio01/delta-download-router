@@ -11,7 +11,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
     // DEBUG:
     // console.log(ext);
 
-    chrome.storage.local.get(url, function (result) {
+    chrome.storage.local.get([url, "defaultDownloadFolder"], function (result) {
         if (result[url]) {
             let finalPath = result[url] + '/' + filename;
             // DEBUG:
@@ -19,13 +19,17 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
 
             suggest({ filename: finalPath });
         } else {
-            suggest({ filename: "Downloads/" + filename });
+            // DEBUG:
+            console.log('No path for this url: using default folder');
+
+            if (result["defaultDownloadFolder"]) {
+                suggest({ filename: result["defaultDownloadFolder"] + "/" + filename });
+            }
         }
     });
     return true;
 
     // TODO:
-    // - choose default download path
     // - control download path format
     // - add support for filetype to folder mapping
     // - add support for rules priority
