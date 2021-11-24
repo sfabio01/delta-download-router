@@ -171,7 +171,7 @@
     </h1>
     <div class="container1">
         <div class="col1">
-            <h3>URL to folder</h3>
+            <h3>URL Mapping</h3>
             <div class="box">
                 {#each urlToFolderArr as [key, value]}
                     <div class="row-item">
@@ -221,7 +221,7 @@
                     >
                 </div>
             </div>
-            <h3>Filetype to folder</h3>
+            <h3>Filetype Mapping</h3>
             <div class="box">
                 {#each Object.entries(types.fileTypes) as [key, value]}
                     <div class="row-item">
@@ -270,7 +270,7 @@
                     {/each}
                 </ol>
                 <p class="hint-text" style="text-align: center;">
-                    Drag the list items to change their priority
+                    Drag a list item to change its priority
                 </p>
             </div>
             <h3>Default download folder</h3>
