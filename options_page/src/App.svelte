@@ -1,8 +1,7 @@
 <script>
     import "./style.css";
     import { fileTypes, priorityValueTextMap, specialKeys } from "./types";
-
-    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+    import * as utils from "./utils";
 
     let objs = {};
 
@@ -42,18 +41,25 @@
         let folderInput = document.getElementById("folderInput");
         let url = urlInput.value;
         let folder = folderInput.value;
-        if (url.length > 0 && folder.length > 0 && urlRegex.test(url)) {
-            chrome.storage.local.set({ [url]: folder }, function () {
-                // DEBUG:
-                // console.log("Rule added: {" + url + ": " + folder + "}");
+        if (utils.urlIsValid(url)) {
+            if (!utils.pathIsValid(folder)) {
+                folder = utils.tryCorrectPath(folder);
+            }
+            if (utils.pathIsValid(folder)) {
+                chrome.storage.local.set({ [url]: folder }, function () {
+                    // DEBUG:
+                    // console.log("Rule added: {" + url + ": " + folder + "}");
 
-                objs[url] = folder;
-                objs = objs;
-                urlInput.value = "";
-                folderInput.value = "";
-            });
+                    objs[url] = folder;
+                    objs = objs;
+                    urlInput.value = "";
+                    folderInput.value = "";
+                });
+            } else {
+                alert("Invalid folder path");
+            }
         } else {
-            alert("Invalid URL or folder name");
+            alert("Invalid URL");
         }
     }
     function deleteRule(key) {
@@ -80,7 +86,10 @@
         if (!newFolder) {
             return;
         }
-        if (key.length > 0 && newFolder.length > 0) {
+        if (!utils.pathIsValid(newFolder)) {
+            newFolder = utils.tryCorrectPath(newFolder);
+        }
+        if (utils.pathIsValid(newFolder)) {
             chrome.storage.local.set({ [key]: newFolder }, function () {
                 // DEBUG:
                 // console.log("Rule edited: {" + key + ": " + newFolder + "}");
