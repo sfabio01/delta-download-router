@@ -1,14 +1,8 @@
-export {
-    urlIsValid,
-    tryCorrectPath,
-    pathIsValid,
-}
-
-function urlIsValid(url) {
+export function urlIsValid(url) {
     return /^(ftp|http|https):\/\/[^ "]+$/.test(url);
 }
 
-function tryCorrectPath(path) {
+export function tryCorrectPath(path) {
     path = path.replace(/\\/g, "/");
     if (path.charAt(0) == "/") {
         path = path.substr(1);
@@ -19,7 +13,7 @@ function tryCorrectPath(path) {
     return path;
 }
 
-function pathIsValid(path) {
+export function pathIsValid(path) {
     if (path.length == 0) {
         return false;
     }

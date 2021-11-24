@@ -1,6 +1,6 @@
 <script>
     import "./style.css";
-    import { fileTypes, priorityValueTextMap, specialKeys } from "./types";
+    import * as types from "./types";
     import * as utils from "./utils";
 
     let objs = {};
@@ -17,11 +17,13 @@
     $: array = Object.entries(objs);
     $: urlToFolderArr = array.filter(
         ([key, _]) =>
-            !fileTypes.hasOwnProperty(key) && specialKeys.indexOf(key) == -1
+            !types.fileTypes.hasOwnProperty(key) &&
+            types.specialKeys.indexOf(key) == -1
     );
     $: filetypeToFolderArr = array.filter(
         ([key, _]) =>
-            fileTypes.hasOwnProperty(key) && specialKeys.indexOf(key) == -1
+            types.fileTypes.hasOwnProperty(key) &&
+            types.specialKeys.indexOf(key) == -1
     );
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
 
@@ -221,7 +223,7 @@
             </div>
             <h3>Filetype to folder</h3>
             <div class="box">
-                {#each Object.entries(fileTypes) as [key, value]}
+                {#each Object.entries(types.fileTypes) as [key, value]}
                     <div class="row-item">
                         <span class="item-title capitalize">{key}</span>
                         <span class="item-subtitle"
@@ -263,7 +265,7 @@
                             draggable="true"
                             class="sortable-item"
                         >
-                            {priorityValueTextMap[value]}
+                            {types.priorityValueTextMap[value]}
                         </li>
                     {/each}
                 </ol>
