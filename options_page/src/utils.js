@@ -23,10 +23,14 @@ export function pathIsValid(path) {
     if (path.charAt(path.length - 1) == "/") {
         return false;
     }
-    for (let c of [":", "*", "?", '"', "<", ">", "|", "\\"]) {
+    for (let c of prohibitedCharsList) {
         if (path.indexOf(c) != -1) {
             return false;
         }
     }
     return true;
 }
+
+const prohibitedCharsList = ["*", "?", ":", '"', "<", ">", "|", "\\"];
+export let pathFormatMessage = "Remember that the folder path is relative to the default download folder defined in your browser's settings (DON'T start from C:/...).\nRead the get started page to know more."
+export let prohibitedCharsMessage = "The following characters are not allowed: " + prohibitedCharsList.join("  ");

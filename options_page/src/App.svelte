@@ -58,7 +58,7 @@
                     folderInput.value = "";
                 });
             } else {
-                alert("Invalid folder path");
+                alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
             }
         } else {
             alert("Invalid URL");
@@ -100,7 +100,7 @@
                 objs = objs;
             });
         } else {
-            alert("Invalid folder name");
+            alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
         }
     }
 
@@ -208,12 +208,24 @@
                         type="text"
                         placeholder="https://example.com/foo"
                     />
-                    <input
-                        id="folderInput"
-                        class="form-control form-control-sm item-subtitle"
-                        type="text"
-                        placeholder="path/to/destination/folder"
-                    />
+                    <div
+                        class="item-subtitle"
+                        style="display: flex; width: 100%;"
+                    >
+                        <input
+                            id="folderInput"
+                            class="form-control form-control-sm"
+                            type="text"
+                            placeholder="path/to/destination/folder"
+                            style="display: inline; margin-right: 2px;"
+                        />
+                        <img
+                            src="./../icons/help.svg"
+                            alt="help"
+                            title={utils.pathFormatMessage}
+                        />
+                    </div>
+
                     <button
                         on:click={addRule}
                         class="item-btn btn btn-primary btn-sm"
@@ -225,7 +237,14 @@
             <div class="box">
                 {#each Object.entries(types.fileTypes) as [key, value]}
                     <div class="row-item">
-                        <span class="item-title capitalize">{key}</span>
+                        <span class="item-title capitalize"
+                            >{key}
+                            <img
+                                title={value}
+                                src="./../icons/help.svg"
+                                alt="help"
+                            /></span
+                        >
                         <span class="item-subtitle"
                             >{#if filetypeToFolderObj[key]}{filetypeToFolderObj[
                                     key
