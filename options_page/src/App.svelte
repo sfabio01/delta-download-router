@@ -148,7 +148,9 @@
 
 <main>
     <h1>
-        Settings <button
+        <!-- svelte-ignore missing-declaration -->
+        Settings
+        <button
             on:click={() => {
                 chrome.downloads.showDefaultFolder();
             }}
