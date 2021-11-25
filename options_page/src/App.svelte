@@ -206,7 +206,7 @@
                         id="urlInput"
                         class="form-control form-control-sm item-title"
                         type="text"
-                        placeholder="https://example.com/foo"
+                        placeholder="Source URL (e.g. https://www.sunset.com/gallery)"
                     />
                     <div
                         class="item-subtitle"
@@ -216,7 +216,7 @@
                             id="folderInput"
                             class="form-control form-control-sm"
                             type="text"
-                            placeholder="path/to/destination/folder"
+                            placeholder="Destination folder (e.g. Images/Sunsets)"
                             style="display: inline; margin-right: 2px;"
                         />
                         <img
@@ -321,10 +321,23 @@
                         role="alert"
                     >
                         It's important you set the default download folder in
-                        case no rule matches.
+                        case no rule matches. If you don't, the default folder
+                        will be the one set in the browser settings (not
+                        recommended).
                     </div>
                 {/if}
             </div>
+            <div>
+                <a href="./../getstarted.html" target="_blank">Get Started</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer1">
+        <div>Developed by <b>Fabio Sabbion</b></div>
+        <div class="footer-icon">
+            <a target="_blank" href="https://www.buymeacoffee.com/fabiosabbion">
+                <img src="./../icons/bmc.svg" alt="buy me a coffe" /></a
+            >
         </div>
     </div>
 </main>

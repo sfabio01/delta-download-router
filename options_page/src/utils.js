@@ -32,5 +32,5 @@ export function pathIsValid(path) {
 }
 
 const prohibitedCharsList = ["*", "?", ":", '"', "<", ">", "|", "\\"];
-export let pathFormatMessage = "Remember that the folder path is relative to the default download folder defined in your browser's settings (DON'T start from C:/...).\nRead the get started page to know more."
+export let pathFormatMessage = "Remember that the folder path is relative to the default download location defined in your browser's settings.\nRead the get started page to know more."
 export let prohibitedCharsMessage = "The following characters are not allowed: " + prohibitedCharsList.join("  ");
