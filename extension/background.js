@@ -1,3 +1,4 @@
+/* --- DOWNLOAD MANAGER LOGIC ---*/
 chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, suggest) {
     let filename = downloadItem.filename;
     // DEBUG:
@@ -92,8 +93,12 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
     // - import/export rules in JSON
 });
 
-/* --- CONSTANTS & UTILS--- */
+/* --- SHOW GET STARTED PAGE --- */
+chrome.runtime.onInstalled.addListener(function () {
+    chrome.tabs.create({ url: "getstarted.html" });
+});
 
+/* --- CONSTANTS & UTILS--- */
 const fileTypes = {
     documents: ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"],
     images: ["jpg", "jpeg", "png", "gif", "bmp", "svg"],
