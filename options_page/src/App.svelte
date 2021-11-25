@@ -41,8 +41,8 @@
     function addRule() {
         let urlInput = document.getElementById("urlInput");
         let folderInput = document.getElementById("folderInput");
-        let url = urlInput.value;
-        let folder = folderInput.value;
+        let url = urlInput.value.trim();
+        let folder = folderInput.value.trim();
         if (utils.urlIsValid(url)) {
             if (!utils.pathIsValid(folder)) {
                 folder = utils.tryCorrectPath(folder);
