@@ -332,12 +332,12 @@
             </div>
         </div>
     </div>
-    <div class="footer1">
+    <footer>
         <div>Developed by <b>Fabio Sabbion</b></div>
         <div class="footer-icon">
             <a target="_blank" href="https://www.buymeacoffee.com/fabiosabbion">
                 <img src="./../icons/bmc.svg" alt="buy me a coffe" /></a
             >
         </div>
-    </div>
+    </footer>
 </main>

@@ -80,7 +80,7 @@ main {
     font-size: 14px;
     color: #888;
 }
-.footer1 {
+footer {
     display: flex;
     flex-direction: row;
     align-items: center;
