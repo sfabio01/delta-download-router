@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Delta Download Manager",
     "version": "1.0.0",
-    "description": "The most sofisticated download manager for your browser",
+    "description": " The most sophisticated download manager for your browser",
     "icons": {
         "32": "icons/delta_32.png",
         "128": "icons/delta_128.png"
