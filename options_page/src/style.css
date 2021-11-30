@@ -1,10 +1,20 @@
 .item-title {
     font-weight: bold;
     grid-area: title;
+    font-size: 18px;
 }
 .item-subtitle {
     grid-area: subtitle;
     font-size: 14px;
+}
+.item-title2 {
+    font-weight: bold;
+    grid-area: title;
+    font-size: 16px;
+}
+.item-subtitle2 {
+    grid-area: subtitle;
+    font-size: 12px;
 }
 .item-btn-group {
     display: flex;
@@ -18,7 +28,6 @@
 }
 .row-item {
     display: grid;
-    margin-bottom: 10px;
     column-gap: 4px;
     grid-template-areas:
         "title title btn"
@@ -27,7 +36,19 @@
     justify-content: space-between;
     padding: 4px;
 }
-.row-item:hover {
+.row-item2 {
+    display: grid;
+    margin-bottom: 10px;
+    column-gap: 4px;
+    grid-template-areas:
+        "title title btn"
+        "subtitle subtitle btn";
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px;
+    margin-left: 16px;
+}
+.block-item:hover {
     background-color: #f0f0f0;
     border-radius: 8px;
 }

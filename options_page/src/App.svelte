@@ -3,19 +3,29 @@
     import * as types from "./types";
     import * as utils from "./utils";
 
-    let objs = {};
+    let objs = {
+        "webeep.polimi.it": {
+            folder: "OneDrive - Politecnico di Milano",
+            paths: {
+                "/mod/folder/view.php?id=21121":
+                    "OneDrive - Politecnico di Milano/Anno 2/Semestre 1/Chimica generale/Slide",
+                "/mod/folder/view.php?id=21130":
+                    "OneDrive - Politecnico di Milano/Anno 2/Semestre 1/Chimica generale/Esercitazioni",
+            },
+        },
+    };
 
     // DEBUG:
     // $: console.log(objs);
 
     let array = [];
-    let urlToFolderArr = [];
+    let domainToFolderArr = [];
     let filetypeToFolderArr = [];
     let filetypeToFolderObj = {};
     let priorityList = ["urlToFolder", "filetypeToFolder"];
 
     $: array = Object.entries(objs);
-    $: urlToFolderArr = array.filter(
+    $: domainToFolderArr = array.filter(
         ([key, _]) =>
             !types.fileTypes.hasOwnProperty(key) &&
             types.specialKeys.indexOf(key) == -1
@@ -28,46 +38,91 @@
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
 
     /* --- Init --- */
-    chrome.storage.local.get(null, function (result) {
-        console.log(result);
-        if (result["priorityList"] == null) {
-            result["priorityList"] = ["urlToFolder", "filetypeToFolder"];
-        }
-        priorityList = result["priorityList"];
-        objs = result;
-    });
+    // chrome.storage.local.get(null, function (result) {
+    //     console.log(result);
+    //     if (result["priorityList"] == null) {
+    //         result["priorityList"] = ["urlToFolder", "filetypeToFolder"];
+    //     }
+    //     priorityList = result["priorityList"];
+    //     objs = result;
+    // });
     /* --- --- --- --- --- --- --- --- --- */
 
-    function addRule() {
-        let urlInput = document.getElementById("urlInput");
+    function addDomain() {
+        let domainInput = document.getElementById("domainInput");
         let folderInput = document.getElementById("folderInput");
-        let url = urlInput.value.trim();
+        let domain = domainInput.value.trim();
         let folder = folderInput.value.trim();
-        if (utils.urlIsValid(url)) {
+        if (utils.domainIsValid(domain)) {
             if (!utils.pathIsValid(folder)) {
                 folder = utils.tryCorrectPath(folder);
             }
             if (utils.pathIsValid(folder)) {
-                chrome.storage.local.set({ [url]: folder }, function () {
+                chrome.storage.local.set({ [domain]: folder }, function () {
                     // DEBUG:
-                    // console.log("Rule added: {" + url + ": " + folder + "}");
+                    console.log("Rule added: {" + domain + ": " + folder + "}");
 
-                    objs[url] = folder;
+                    objs[domain] = { folder: folder, paths: {} };
                     objs = objs;
-                    urlInput.value = "";
+                    domainInput.value = "";
                     folderInput.value = "";
                 });
             } else {
                 alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
             }
         } else {
-            alert("Invalid URL");
+            alert("Invalid domain");
         }
     }
-    function deleteRule(key) {
+    function addPathUnderDomain(domain) {
+        let path = prompt(
+            `Insert new path under ${domain}\nNote: insert only the part of the URL after the domain`,
+            ""
+        );
+        if (path == null) return;
+        let folder = prompt(
+            `Final URL: ${domain + path}\nDestination folder:`,
+            ""
+        );
+        if (folder == null) return;
+
+        if (!utils.pathIsValid(folder)) {
+            folder = utils.tryCorrectPath(folder);
+        }
+        if (utils.pathIsValid(folder)) {
+            chrome.storage.local.set(
+                {
+                    [domain]: {
+                        folder: objs[domain].folder,
+                        paths: {
+                            [path]: folder,
+                        },
+                    },
+                },
+                function () {
+                    // DEBUG:
+                    console.log(
+                        "Rule added: {" +
+                            domain +
+                            "->" +
+                            path +
+                            ": " +
+                            folder +
+                            "}"
+                    );
+
+                    objs[domain].paths[path] = folder;
+                    objs = objs;
+                }
+            );
+        } else {
+            alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
+        }
+    }
+    function deleteFiletypeRule(key) {
         let yes = confirm(
             "Are you sure you want to delete the following rule?\n" +
-                "URL: " +
+                "Filetype: " +
                 key +
                 "\n" +
                 "Folder: " +
@@ -83,8 +138,40 @@
             });
         }
     }
-    function editRule(key) {
-        let newFolder = prompt("URL: " + key + "\nEdit Folder", objs[key]);
+    function deleteDomainRule(key) {
+        let yes = confirm(
+            "Are you sure you want to delete the following domain, and all its paths?\n" +
+                key
+        );
+        if (yes) {
+            chrome.storage.local.remove(key, function () {
+                // DEBUG:
+                // console.log("Rule deleted: " + key);
+
+                delete objs[key];
+                objs = objs;
+            });
+        }
+    }
+    function deletePathRule(domain, path) {
+        let yes = confirm(
+            "Are you sure you want to delete the following URL?\n" +
+                domain +
+                path
+        );
+        if (yes) {
+            delete objs[domain].paths[path];
+            chrome.storage.local.set({ [domain]: objs[domain] }, function () {
+                // DEBUG:
+                // console.log("Rule deleted: " + domain + path);
+
+                objs = objs;
+            });
+        }
+    }
+    function editFiletypeRule(key) {
+        // Used also for editing default download folder
+        let newFolder = prompt("Filetype: " + key + "\nEdit Folder", objs[key]);
         if (!newFolder) {
             return;
         }
@@ -97,6 +184,52 @@
                 // console.log("Rule edited: {" + key + ": " + newFolder + "}");
 
                 objs[key] = newFolder;
+                objs = objs;
+            });
+        } else {
+            alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
+        }
+    }
+    function editDomainRule(key) {
+        let newFolder = prompt(
+            "Domain: " + key + "\nEdit Folder",
+            objs[key].folder
+        );
+        if (!newFolder) {
+            return;
+        }
+        if (!utils.pathIsValid(newFolder)) {
+            newFolder = utils.tryCorrectPath(newFolder);
+        }
+        if (utils.pathIsValid(newFolder)) {
+            objs[key].folder = newFolder;
+            chrome.storage.local.set({ [key]: objs[key] }, function () {
+                // DEBUG:
+                // console.log("Rule edited: {" + key + ": " + newFolder + "}");
+
+                objs = objs;
+            });
+        } else {
+            alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
+        }
+    }
+    function editPathRule(domain, path) {
+        let newFolder = prompt(
+            "URL: " + domain + path + "\nEdit Folder",
+            objs[domain].paths[path]
+        );
+        if (!newFolder) {
+            return;
+        }
+        if (!utils.pathIsValid(newFolder)) {
+            newFolder = utils.tryCorrectPath(newFolder);
+        }
+        if (utils.pathIsValid(newFolder)) {
+            objs[domain].paths[path] = newFolder;
+            chrome.storage.local.set({ [domain]: objs[domain] }, function () {
+                // DEBUG:
+                // console.log("Rule edited: {" + domain + path + ": " + newFolder + "}");
+
                 objs = objs;
             });
         } else {
@@ -173,40 +306,82 @@
         <div class="col1">
             <h3>URL Mapping</h3>
             <div class="box">
-                {#each urlToFolderArr as [key, value]}
-                    <div class="row-item">
-                        <span class="item-title">{key}</span>
-                        <span class="item-subtitle">{value}</span>
-                        <div class="item-btn-group">
-                            <button
-                                on:click={() => {
-                                    editRule(key);
-                                }}
-                                class="item-btn btn btn-primary btn-sm"
-                                ><img
-                                    src="./../icons/edit.svg"
-                                    alt="edit"
-                                /></button
-                            >
-                            <button
-                                on:click={() => {
-                                    deleteRule(key);
-                                }}
-                                class="item-btn btn btn-danger btn-sm"
-                                ><img
-                                    src="./../icons/delete.svg"
-                                    alt="delete"
-                                /></button
-                            >
+                {#each domainToFolderArr as [key, value]}
+                    <div class="block-item">
+                        <div class="row-item">
+                            <span class="item-title">{key}</span>
+                            <span class="item-subtitle">{value["folder"]}</span>
+                            <div class="item-btn-group">
+                                <button
+                                    on:click={() => {
+                                        addPathUnderDomain(key);
+                                    }}
+                                    class="item-btn btn btn-primary btn-sm"
+                                    ><img
+                                        src="./../icons/add.svg"
+                                        alt="add"
+                                    /></button
+                                >
+                                <button
+                                    on:click={() => {
+                                        editDomainRule(key);
+                                    }}
+                                    class="item-btn btn btn-primary btn-sm"
+                                    ><img
+                                        src="./../icons/edit.svg"
+                                        alt="edit"
+                                    /></button
+                                >
+                                <button
+                                    on:click={() => {
+                                        deleteDomainRule(key);
+                                    }}
+                                    class="item-btn btn btn-danger btn-sm"
+                                    ><img
+                                        src="./../icons/delete.svg"
+                                        alt="delete"
+                                    /></button
+                                >
+                            </div>
                         </div>
+                        {#each Object.entries(value["paths"]) as [path, folder]}
+                            <div class="row-item2">
+                                <span class="item-title2">{path}</span>
+                                <span class="item-subtitle2">{folder}</span>
+                                <div class="item-btn-group">
+                                    <button
+                                        on:click={() => {
+                                            editPathRule(key, path);
+                                        }}
+                                        class="item-btn btn btn-primary btn-sm"
+                                        ><img
+                                            src="./../icons/edit.svg"
+                                            alt="edit"
+                                        /></button
+                                    >
+                                    <button
+                                        on:click={() => {
+                                            deletePathRule(key, path);
+                                        }}
+                                        class="item-btn btn btn-danger btn-sm"
+                                        ><img
+                                            src="./../icons/delete.svg"
+                                            alt="delete"
+                                        /></button
+                                    >
+                                </div>
+                            </div>
+                        {/each}
                     </div>
                 {/each}
+
                 <div class="row-item">
                     <input
-                        id="urlInput"
+                        id="domainInput"
                         class="form-control form-control-sm item-title"
+                        style="font-size: 16px;"
                         type="text"
-                        placeholder="Source URL (e.g. https://www.sunset.com/gallery)"
+                        placeholder="Website domain (e.g. www.sunset.com)"
                     />
                     <div
                         class="item-subtitle"
@@ -227,7 +402,7 @@
                     </div>
 
                     <button
-                        on:click={addRule}
+                        on:click={addDomain}
                         class="item-btn btn btn-primary btn-sm"
                         ><img src="./../icons/add.svg" alt="add" /></button
                     >
@@ -253,7 +428,7 @@
                         <div class="item-btn-group">
                             <button
                                 on:click={() => {
-                                    editRule(key);
+                                    editFiletypeRule(key);
                                 }}
                                 class="item-btn btn btn-primary btn-sm"
                                 ><img
@@ -262,7 +437,7 @@
                                 /></button
                             >
                             <button
-                                on:click={() => deleteRule(key)}
+                                on:click={() => deleteFiletypeRule(key)}
                                 class="item-btn btn btn-danger btn-sm"
                                 ><img
                                     src="./../icons/delete.svg"
@@ -304,7 +479,7 @@
                     <div class="item-btn-group">
                         <button
                             on:click={() => {
-                                editRule("defaultDownloadFolder");
+                                editFiletypeRule("defaultDownloadFolder");
                             }}
                             class="item-btn btn btn-primary btn-sm"
                             ><img
