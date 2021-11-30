@@ -38,18 +38,34 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
         }
     });
 
+    return true;
+
     async function urlMapping(url, filename) {
         // DEBUG:
         console.log("Performing URL mapping: " + url);
+        let urlObj;
+        try {
+            urlObj = new URL(url);
+        } catch (error) {
+            return false;
+        }
 
-        let result = await chrome.storage.local.get([url]);
+        let domain = urlObj.hostname;
+        console.log(domain);
+        let path = url.split(domain)[1];
+        console.log(path);
+        let result = await chrome.storage.local.get([domain]);
 
-        if (result[url]) {
-            let finalPath = result[url] + '/' + filename;
+        if (result[domain]) {
+            let finalFolderPath = result[domain].folder + "/" + filename;
+
+            if (result[domain].paths[path]) {
+                finalFolderPath = result[domain].paths[path] + "/" + filename;
+            }
             // DEBUG:
-            console.log('Final path: ' + finalPath);
+            console.log('Final path: ' + finalFolderPath);
 
-            suggest({ filename: finalPath });
+            suggest({ filename: finalFolderPath });
 
             return true;
         }
@@ -85,11 +101,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
         return false;
     }
 
-
-    return true;
-
     // TODO:
-    // - write get started page
     // - import/export rules in JSON
 });
 
