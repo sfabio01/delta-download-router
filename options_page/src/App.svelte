@@ -3,17 +3,7 @@
     import * as types from "./types";
     import * as utils from "./utils";
 
-    let objs = {
-        "webeep.polimi.it": {
-            folder: "OneDrive - Politecnico di Milano",
-            paths: {
-                "/mod/folder/view.php?id=21121":
-                    "OneDrive - Politecnico di Milano/Anno 2/Semestre 1/Chimica generale/Slide",
-                "/mod/folder/view.php?id=21130":
-                    "OneDrive - Politecnico di Milano/Anno 2/Semestre 1/Chimica generale/Esercitazioni",
-            },
-        },
-    };
+    let objs = {};
 
     // DEBUG:
     // $: console.log(objs);
@@ -38,14 +28,14 @@
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
 
     /* --- Init --- */
-    // chrome.storage.local.get(null, function (result) {
-    //     console.log(result);
-    //     if (result["priorityList"] == null) {
-    //         result["priorityList"] = ["urlToFolder", "filetypeToFolder"];
-    //     }
-    //     priorityList = result["priorityList"];
-    //     objs = result;
-    // });
+    chrome.storage.local.get(null, function (result) {
+        console.log(result);
+        if (result["priorityList"] == null) {
+            result["priorityList"] = ["urlToFolder", "filetypeToFolder"];
+        }
+        priorityList = result["priorityList"];
+        objs = result;
+    });
     /* --- --- --- --- --- --- --- --- --- */
 
     function addDomain() {
@@ -58,15 +48,20 @@
                 folder = utils.tryCorrectPath(folder);
             }
             if (utils.pathIsValid(folder)) {
-                chrome.storage.local.set({ [domain]: folder }, function () {
-                    // DEBUG:
-                    console.log("Rule added: {" + domain + ": " + folder + "}");
+                chrome.storage.local.set(
+                    { [domain]: { folder: folder, paths: {} } },
+                    function () {
+                        // DEBUG:
+                        console.log(
+                            "Rule added: {" + domain + ": " + folder + "}"
+                        );
 
-                    objs[domain] = { folder: folder, paths: {} };
-                    objs = objs;
-                    domainInput.value = "";
-                    folderInput.value = "";
-                });
+                        objs[domain] = { folder: folder, paths: {} };
+                        objs = objs;
+                        domainInput.value = "";
+                        folderInput.value = "";
+                    }
+                );
             } else {
                 alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
             }
