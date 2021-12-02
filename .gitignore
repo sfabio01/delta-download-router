@@ -2,4 +2,5 @@
 **/public/build/
 **/build/
 extension/options_page_build/
+extension/popup_page_build/
 .DS_Store
