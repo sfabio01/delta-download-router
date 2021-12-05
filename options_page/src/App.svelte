@@ -91,6 +91,7 @@
                         folder: objs[domain].folder,
                         paths: {
                             [path]: folder,
+                            ...objs[domain].paths,
                         },
                     },
                 },

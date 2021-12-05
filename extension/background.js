@@ -110,6 +110,21 @@ chrome.runtime.onInstalled.addListener(function () {
     chrome.tabs.create({ url: "getstarted.html" });
 });
 
+/* ------- LISTEN FOR MESSAGES --------*/
+chrome.runtime.onMessage.addListener(
+    function (message, sender, sendResponse) {
+        if (message == "getURL") {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                let url = new URL(tabs[0].url);
+                let domain = url.hostname;
+                let path = tabs[0].url.split(domain)[1];
+                sendResponse([domain, path]);
+            });
+        }
+        return true;
+    }
+);
+
 /* --- CONSTANTS & UTILS--- */
 const fileTypes = {
     documents: ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"],

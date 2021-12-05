@@ -1,30 +1,130 @@
 <script>
-	export let name;
+	import "./style.css";
+	import * as utils from "./utils";
+
+	let domain = "";
+	let path = "";
+	let obj = null;
+
+	chrome.runtime.sendMessage("getURL", function (response) {
+		domain = response[0];
+		path = response[1];
+		chrome.storage.local.get(domain, function (result) {
+			console.log(result);
+			obj = result[domain];
+		});
+	});
+
+	function addPathUnderDomain() {
+		let folderInput = document.getElementById("pathInputFolder").value;
+		let folder = folderInput.trim();
+		if (folder == null || folder == "") return;
+
+		if (!utils.pathIsValid(folder)) {
+			folder = utils.tryCorrectPath(folder);
+		}
+		if (utils.pathIsValid(folder)) {
+			chrome.storage.local.set(
+				{
+					[domain]: {
+						folder: obj.folder,
+						paths: {
+							[path]: folder,
+							...obj.paths,
+						},
+					},
+				},
+				function () {
+					// DEBUG:
+					console.log(
+						"Rule added: {" +
+							domain +
+							"->" +
+							path +
+							": " +
+							folder +
+							"}"
+					);
+
+					obj.paths[path] = folder;
+					obj = obj;
+				}
+			);
+		} else {
+			alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
+		}
+	}
+	function addDomain() {
+		let folderInput = document.getElementById("domainInputFolder").value;
+		let folder = folderInput.trim();
+
+		if (!utils.pathIsValid(folder)) {
+			folder = utils.tryCorrectPath(folder);
+		}
+		if (utils.pathIsValid(folder)) {
+			chrome.storage.local.set(
+				{ [domain]: { folder: folder, paths: {} } },
+				function () {
+					// DEBUG:
+					console.log("Rule added: {" + domain + ": " + folder + "}");
+
+					obj = { folder: folder, paths: {} };
+					obj = obj;
+				}
+			);
+		} else {
+			alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
+		}
+	}
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1>Delta</h1>
+	<div class="domain">{domain}</div>
+	{#if obj}
+		<div class="folder">{obj["folder"]}</div>
+		<div class="path">{path}</div>
+		{#if obj["paths"][path]}
+			<div class="folder">{obj["paths"][path]}</div>
+		{:else}
+			<div class="container-fluid">
+				<div class="row align-items-center g-1">
+					<div class="col-9">
+						<input
+							id="pathInputFolder"
+							type="text"
+							class="form-control form-control-sm folder"
+							placeholder="Add a folder"
+						/>
+					</div>
+					<div class="col">
+						<button
+							class="btn btn-primary btn-sm"
+							on:click={addPathUnderDomain}
+						>
+							<img src="./../icons/add.svg" alt="add" /></button
+						>
+					</div>
+				</div>
+			</div>
+		{/if}
+	{:else}
+		<div class="container-fluid">
+			<div class="row align-items-center g-1">
+				<div class="col-9">
+					<input
+						id="domainInputFolder"
+						type="text"
+						class="form-control form-control-sm folder"
+						placeholder="Add a folder"
+					/>
+				</div>
+				<div class="col">
+					<button class="btn btn-primary btn-sm" on:click={addDomain}>
+						<img src="./../icons/add.svg" alt="add" /></button
+					>
+				</div>
+			</div>
+		</div>
+	{/if}
 </main>
-
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style>
