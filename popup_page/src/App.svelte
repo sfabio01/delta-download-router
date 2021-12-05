@@ -76,6 +76,12 @@
 			alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
 		}
 	}
+	function openOptionsPage() {
+		chrome.tabs.create({
+			url: "./../options.html",
+			active: true,
+		});
+	}
 </script>
 
 <main>
@@ -127,4 +133,6 @@
 			</div>
 		</div>
 	{/if}
+	<!-- svelte-ignore a11y-invalid-attribute -->
+	<a on:click={openOptionsPage} href="">Options page</a>
 </main>
