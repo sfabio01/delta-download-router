@@ -38,7 +38,7 @@
 }
 .row-item2 {
     display: grid;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
     column-gap: 4px;
     grid-template-areas:
         "title title btn"

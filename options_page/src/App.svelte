@@ -38,83 +38,6 @@
     });
     /* --- --- --- --- --- --- --- --- --- */
 
-    function addDomain() {
-        let domainInput = document.getElementById("domainInput");
-        let folderInput = document.getElementById("folderInput");
-        let domain = domainInput.value.trim();
-        let folder = folderInput.value.trim();
-        if (utils.domainIsValid(domain)) {
-            if (!utils.pathIsValid(folder)) {
-                folder = utils.tryCorrectPath(folder);
-            }
-            if (utils.pathIsValid(folder)) {
-                chrome.storage.local.set(
-                    { [domain]: { folder: folder, paths: {} } },
-                    function () {
-                        // DEBUG:
-                        console.log(
-                            "Rule added: {" + domain + ": " + folder + "}"
-                        );
-
-                        objs[domain] = { folder: folder, paths: {} };
-                        objs = objs;
-                        domainInput.value = "";
-                        folderInput.value = "";
-                    }
-                );
-            } else {
-                alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
-            }
-        } else {
-            alert("Invalid domain");
-        }
-    }
-    function addPathUnderDomain(domain) {
-        let path = prompt(
-            `Insert new path under ${domain}\nNote: insert only the part of the URL after the domain`,
-            ""
-        );
-        if (path == null) return;
-        let folder = prompt(
-            `Final URL: ${domain + path}\nDestination folder:`,
-            ""
-        );
-        if (folder == null) return;
-
-        if (!utils.pathIsValid(folder)) {
-            folder = utils.tryCorrectPath(folder);
-        }
-        if (utils.pathIsValid(folder)) {
-            chrome.storage.local.set(
-                {
-                    [domain]: {
-                        folder: objs[domain].folder,
-                        paths: {
-                            [path]: folder,
-                            ...objs[domain].paths,
-                        },
-                    },
-                },
-                function () {
-                    // DEBUG:
-                    console.log(
-                        "Rule added: {" +
-                            domain +
-                            "->" +
-                            path +
-                            ": " +
-                            folder +
-                            "}"
-                    );
-
-                    objs[domain].paths[path] = folder;
-                    objs = objs;
-                }
-            );
-        } else {
-            alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
-        }
-    }
     function deleteFiletypeRule(key) {
         let yes = confirm(
             "Are you sure you want to delete the following rule?\n" +
@@ -287,17 +210,7 @@
 </script>
 
 <main>
-    <h1>
-        <!-- svelte-ignore missing-declaration -->
-        Settings
-        <button
-            on:click={() => {
-                chrome.downloads.showDefaultFolder();
-            }}
-            class="item-btn btn btn-primary btn-sm"
-            ><img src="./../icons/folder.svg" alt="download folder" /></button
-        >
-    </h1>
+    <h1>Settings</h1>
     <div class="container1">
         <div class="col1">
             <h3>URL Mapping</h3>
@@ -308,16 +221,6 @@
                             <span class="item-title">{key}</span>
                             <span class="item-subtitle">{value["folder"]}</span>
                             <div class="item-btn-group">
-                                <button
-                                    on:click={() => {
-                                        addPathUnderDomain(key);
-                                    }}
-                                    class="item-btn btn btn-primary btn-sm"
-                                    ><img
-                                        src="./../icons/add.svg"
-                                        alt="add"
-                                    /></button
-                                >
                                 <button
                                     on:click={() => {
                                         editDomainRule(key);
@@ -371,38 +274,16 @@
                     </div>
                 {/each}
 
-                <div class="row-item">
-                    <input
-                        id="domainInput"
-                        class="form-control form-control-sm item-title"
-                        style="font-size: 16px;"
-                        type="text"
-                        placeholder="Website domain (e.g. www.sunset.com)"
-                    />
-                    <div
-                        class="item-subtitle"
-                        style="display: flex; width: 100%;"
-                    >
-                        <input
-                            id="folderInput"
-                            class="form-control form-control-sm"
-                            type="text"
-                            placeholder="Destination folder (e.g. Images/Sunsets)"
-                            style="display: inline; margin-right: 2px;"
-                        />
-                        <img
-                            src="./../icons/help.svg"
-                            alt="help"
-                            title={utils.pathFormatMessage}
-                        />
-                    </div>
-
-                    <button
-                        on:click={addDomain}
-                        class="item-btn btn btn-primary btn-sm"
-                        ><img src="./../icons/add.svg" alt="add" /></button
-                    >
-                </div>
+                <p
+                    class="hint-text"
+                    style="text-align: center; margin-top: 8px;"
+                >
+                    You can add a new rule by clicking the extension icon <img
+                        src="./../icons/delta_32.png"
+                        alt="delta"
+                        width="16px"
+                    /> next to the address bar when you are visiting a website
+                </p>
             </div>
             <h3>Filetype Mapping</h3>
             <div class="box">
