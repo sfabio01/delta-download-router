@@ -213,7 +213,7 @@
     <h1>Settings</h1>
     <div class="container1">
         <div class="col1">
-            <h3>URL Mapping</h3>
+            <h3>Domain and URL Mapping</h3>
             <div class="box">
                 {#each domainToFolderArr as [key, value]}
                     <div class="block-item">
