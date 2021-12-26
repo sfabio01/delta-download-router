@@ -95,7 +95,13 @@
 		{:else}
 			<div class="container-fluid">
 				<div class="row align-items-center g-1">
-					<div class="col-9">
+					<img
+						class="col-1"
+						src="./../icons/help.svg"
+						alt="help"
+						title={utils.pathFormatMessage}
+					/>
+					<div class="col-8">
 						<input
 							id="pathInputFolder"
 							type="text"
@@ -117,7 +123,13 @@
 	{:else}
 		<div class="container-fluid">
 			<div class="row align-items-center g-1">
-				<div class="col-9">
+				<img
+					class="col-1"
+					src="./../icons/help.svg"
+					alt="help"
+					title={utils.pathFormatMessage}
+				/>
+				<div class="col-8">
 					<input
 						id="domainInputFolder"
 						type="text"
