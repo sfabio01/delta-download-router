@@ -94,6 +94,7 @@
         if (!newFolder) {
             return;
         }
+        newFolder = newFolder.trim();
         if (!utils.pathIsValid(newFolder)) {
             newFolder = utils.tryCorrectPath(newFolder);
         }
@@ -117,6 +118,7 @@
         if (!newFolder) {
             return;
         }
+        newFolder = newFolder.trim();
         if (!utils.pathIsValid(newFolder)) {
             newFolder = utils.tryCorrectPath(newFolder);
         }
@@ -137,9 +139,11 @@
             "URL: " + domain + path + "\nEdit Folder",
             objs[domain].paths[path]
         );
+
         if (!newFolder) {
             return;
         }
+        newFolder = newFolder.trim();
         if (!utils.pathIsValid(newFolder)) {
             newFolder = utils.tryCorrectPath(newFolder);
         }
