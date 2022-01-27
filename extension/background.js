@@ -57,17 +57,21 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
         let result = await chrome.storage.local.get([domain]);
 
         if (result[domain]) {
-            let finalFolderPath = result[domain].folder + "/" + filename;
-
+            let finalFolderPath = "";
+            if (result[domain].folder) {
+                finalFolderPath = result[domain].folder + "/" + filename;
+            }
             if (result[domain].paths[path]) {
                 finalFolderPath = result[domain].paths[path] + "/" + filename;
             }
-            // DEBUG:
-            console.log('Final path: ' + finalFolderPath);
+            if (finalFolderPath != "") {
+                // DEBUG:
+                console.log('Final path: ' + finalFolderPath);
 
-            suggest({ filename: finalFolderPath });
+                suggest({ filename: finalFolderPath });
 
-            return true;
+                return true;
+            }
         }
 
         // DEBUG:
