@@ -34,6 +34,8 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
             let result = await chrome.storage.local.get(["defaultDownloadFolder"]);
             if (result["defaultDownloadFolder"]) {
                 suggest({ filename: result["defaultDownloadFolder"] + "/" + filename });
+            } else {
+                suggest({ filename: filename });
             }
         }
     });
