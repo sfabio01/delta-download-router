@@ -33,6 +33,9 @@
         if (result["priorityList"] == null) {
             result["priorityList"] = ["urlToFolder", "filetypeToFolder"];
         }
+        if (result["urlMappingMode"] == null) {
+            result["urlMappingMode"] = "specific";
+        }
         priorityList = result["priorityList"];
         objs = result;
     });
@@ -158,6 +161,15 @@
         } else {
             alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
         }
+    }
+
+    function setUrlMappingMode(mode) {
+        chrome.storage.local.set({ urlMappingMode: mode }, function () {
+            // DEBUG:
+            // console.log("Mapping mode set to: " + mode);
+            objs["urlMappingMode"] = mode;
+            objs = objs;
+        });
     }
 
     /* --- Sortable list config --- */
@@ -290,6 +302,55 @@
                         width="16px"
                     /> next to the address bar when you are visiting a website
                 </p>
+            </div>
+            <div class="box">
+                <div class="row-item">
+                    <span class="item-title">URL mapping mode</span>
+                    <span class="item-subtitle"
+                        >Choose whether to map only the specific URL or also all
+                        the URLs starting with it</span
+                    >
+                    <div class="item-btn-group">
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="mappingModeDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                >{objs["urlMappingMode"]
+                                    ? objs["urlMappingMode"][0].toUpperCase() +
+                                      objs["urlMappingMode"].substr(1)
+                                    : "Select"}</button
+                            >
+                            <ul
+                                class="dropdown-menu"
+                                aria-labelledby="mappingModeDropdown"
+                            >
+                                <li>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        on:click={() =>
+                                            setUrlMappingMode("specific")}
+                                    >
+                                        Specific</button
+                                    >
+                                </li>
+                                <li>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        on:click={() =>
+                                            setUrlMappingMode("startingWith")}
+                                    >
+                                        Starting with</button
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- DOMAIN MAPPING SECTION end -->
             <!-- FILETYPE MAPPING SECTION start -->

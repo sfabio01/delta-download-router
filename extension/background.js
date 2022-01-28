@@ -56,13 +56,29 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
         console.log(domain);
         let path = url.split(domain)[1];
         console.log(path);
-        let result = await chrome.storage.local.get([domain]);
+        let result = await chrome.storage.local.get([domain, "urlMappingMode"]);
 
         if (result[domain]) {
             let finalFolderPath = "";
             if (result[domain].folder) {
                 finalFolderPath = result[domain].folder + "/" + filename;
             }
+
+            if (result.urlMappingMode == "startingWith") {
+                console.log("MODE: Starting with");
+                let maxLenght = 0;
+                for (let p in result[domain].paths) {
+                    if (path.startsWith(p)) {
+                        console.log("Matched: " + result[domain].paths[p]);
+                        let l = p.split("/").length;
+                        if (l > maxLenght) {
+                            finalFolderPath = result[domain].paths[p] + "/" + filename;
+                            maxLenght = l;
+                        }
+                    }
+                }
+            }
+
             if (result[domain].paths[path]) {
                 finalFolderPath = result[domain].paths[path] + "/" + filename;
             }
