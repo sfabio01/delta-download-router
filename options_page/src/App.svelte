@@ -216,7 +216,9 @@
 <main>
     <h1>Settings</h1>
     <div class="container1">
+        <!-- LEFT COLUMN start -->
         <div class="col1">
+            <!-- DOMAIN MAPPING SECTION start -->
             <h3>Domain and URL Mapping</h3>
             <div class="box">
                 {#each domainToFolderArr as [key, value]}
@@ -289,6 +291,8 @@
                     /> next to the address bar when you are visiting a website
                 </p>
             </div>
+            <!-- DOMAIN MAPPING SECTION end -->
+            <!-- FILETYPE MAPPING SECTION start -->
             <h3>Filetype Mapping</h3>
             <div class="box">
                 {#each Object.entries(types.fileTypes) as [key, value]}
@@ -329,8 +333,12 @@
                     </div>
                 {/each}
             </div>
+            <!-- FILETYPE MAPPING SECTION end -->
         </div>
+        <!-- LEFT COLUMN end -->
+        <!-- RIGHT COLUMN start -->
         <div class="col1">
+            <!-- RULES PRIORITY SECTION start -->
             <h3>Rules priority</h3>
             <div class="box">
                 <ol id="priority-list" style="font-weight: bold;">
@@ -348,6 +356,8 @@
                     Drag a list item to change its priority
                 </p>
             </div>
+            <!-- RULES PRIORITY SECTION end -->
+            <!-- DEFAULT DOWNLOAD FOLDER SECTION start -->
             <h3>Default download folder</h3>
             <div class="box">
                 <div class="row-item">
@@ -368,6 +378,15 @@
                                 alt="edit"
                             /></button
                         >
+                        <button
+                            on:click={() =>
+                                deleteFiletypeRule("defaultDownloadFolder")}
+                            class="item-btn btn btn-danger btn-sm"
+                            ><img
+                                src="./../icons/delete.svg"
+                                alt="delete"
+                            /></button
+                        >
                     </div>
                 </div>
                 {#if !objs["defaultDownloadFolder"]}
@@ -378,15 +397,16 @@
                     >
                         It's important you set the default download folder in
                         case no rule matches. If you don't, the default folder
-                        will be the one set in the browser settings (not
-                        recommended).
+                        will be the one set in the browser settings.
                     </div>
                 {/if}
             </div>
+            <!-- DEFAULT DOWNLOAD FOLDER SECTION end -->
             <div>
                 <a href="./../getstarted.html" target="_blank">Get Started</a>
             </div>
         </div>
+        <!-- RIGHT COLUMN end -->
     </div>
     <footer>
         <div>Developed by <b>Fabio Sabbion</b></div>
