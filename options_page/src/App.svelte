@@ -18,12 +18,12 @@
     $: domainToFolderArr = array.filter(
         ([key, _]) =>
             !types.fileTypes.hasOwnProperty(key) &&
-            types.specialKeys.indexOf(key) == -1
+            utils.specialKeys.indexOf(key) == -1
     );
     $: filetypeToFolderArr = array.filter(
         ([key, _]) =>
             types.fileTypes.hasOwnProperty(key) &&
-            types.specialKeys.indexOf(key) == -1
+            utils.specialKeys.indexOf(key) == -1
     );
     $: filetypeToFolderObj = Object.fromEntries(filetypeToFolderArr);
 
@@ -113,7 +113,7 @@
             alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
         }
     }
-    function editDomainRule(key) {
+    async function editDomainRule(key) {
         let newFolder = prompt(
             "Domain: " + key + "\nEdit Folder",
             objs[key].folder
@@ -409,7 +409,7 @@
                             draggable="true"
                             class="sortable-item"
                         >
-                            {types.priorityValueTextMap[value]}
+                            {utils.priorityValueTextMap[value]}
                         </li>
                     {/each}
                 </ol>

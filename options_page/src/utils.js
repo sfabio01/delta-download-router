@@ -37,5 +37,14 @@ export function pathIsValid(path) {
 }
 
 const prohibitedCharsList = ["*", "?", ":", '"', "<", ">", "|", "\\"];
+
 export let pathFormatMessage = "Remember that the folder path is relative to the default download location defined in your browser's settings.\nRead the get started page to know more."
+
 export let prohibitedCharsMessage = "The following characters are not allowed: " + prohibitedCharsList.join("  ");
+
+export const priorityValueTextMap = {
+    "urlToFolder": "URL Mapping",
+    "filetypeToFolder": "Filetype Mapping",
+}
+
+export const specialKeys = ["priorityList", "defaultDownloadFolder", "urlMappingMode"];

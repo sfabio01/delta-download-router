@@ -60,10 +60,3 @@ export const fileTypes = {
         "sqlite",
     ],
 };
-
-export const priorityValueTextMap = {
-    "urlToFolder": "URL Mapping",
-    "filetypeToFolder": "Filetype Mapping",
-}
-
-export const specialKeys = ["priorityList", "defaultDownloadFolder", "urlMappingMode"];
