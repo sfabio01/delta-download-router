@@ -1,4 +1,5 @@
 <script>
+    import ModalWindow from "./ModalWindow.svelte";
     import "./style.css";
     import * as types from "./types";
     import * as utils from "./utils";
@@ -38,7 +39,15 @@
         }
         priorityList = result["priorityList"];
         objs = result;
+        if (
+            !objs["newVersionAlertViewed"] ||
+            objs["newVersionAlertViewed"] != "1.2.0"
+        ) {
+            chrome.storage.local.set({ newVersionAlertViewed: "1.2.0" });
+            window.location = "#open-modal";
+        }
     });
+
     /* --- --- --- --- --- --- --- --- --- */
 
     function deleteFiletypeRule(key) {
@@ -469,6 +478,7 @@
         </div>
         <!-- RIGHT COLUMN end -->
     </div>
+    <ModalWindow />
     <footer>
         <div>Developed by <b>Fabio Sabbion</b></div>
         <div class="footer-icon">
