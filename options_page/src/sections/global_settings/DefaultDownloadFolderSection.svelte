@@ -57,26 +57,34 @@
 <main>
     <h3>Default download folder</h3>
     <div class="box">
-        <div class="row-item">
-            <span class="item-title">Default download folder</span>
-            <span class="item-subtitle"
-                >{#if $objs["defaultDownloadFolder"]}{$objs[
-                        "defaultDownloadFolder"
-                    ]}{:else}Not defined{/if}</span
-            >
-            <div class="item-btn-group">
-                <button
-                    on:click={editDefaultDownloadFolder}
-                    class="item-btn btn btn-primary btn-sm"
-                    ><img src="./../icons/edit.svg" alt="edit" /></button
-                >
-                <button
-                    on:click={deleteDefaultDownloadFolder}
-                    class="item-btn btn btn-danger btn-sm"
-                    ><img src="./../icons/delete.svg" alt="delete" /></button
-                >
+        <div class="block-item">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <div class="title">Default download folder</div>
+                    <div class="subtitle">
+                        {#if $objs["defaultDownloadFolder"]}{$objs[
+                                "defaultDownloadFolder"
+                            ]}{:else}Not defined{/if}
+                    </div>
+                </div>
+                <div class="col text-end">
+                    <button
+                        on:click={editDefaultDownloadFolder}
+                        class="btn btn-primary btn-sm"
+                        ><img src="./../icons/edit.svg" alt="edit" /></button
+                    >
+                    <button
+                        on:click={deleteDefaultDownloadFolder}
+                        class="btn btn-danger btn-sm"
+                        ><img
+                            src="./../icons/delete.svg"
+                            alt="delete"
+                        /></button
+                    >
+                </div>
             </div>
         </div>
+
         {#if !$objs["defaultDownloadFolder"]}
             <div
                 class="alert alert-warning"

@@ -108,15 +108,18 @@
     <div class="box">
         {#each domainToFolderArr as [key, value]}
             <div class="block-item">
-                <div class="row-item">
-                    <span class="item-title">{key}</span>
-                    <span class="item-subtitle">{value["folder"]}</span>
-                    <div class="item-btn-group">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <div class="title">{key}</div>
+                        <div class="subtitle">{value["folder"]}</div>
+                    </div>
+
+                    <div class="col text-end">
                         <button
                             on:click={() => {
                                 editDomainRule(key);
                             }}
-                            class="item-btn btn btn-primary btn-sm"
+                            class="btn btn-primary btn-sm"
                             ><img
                                 src="./../icons/edit.svg"
                                 alt="edit"
@@ -126,7 +129,7 @@
                             on:click={() => {
                                 deleteDomainRule(key);
                             }}
-                            class="item-btn btn btn-danger btn-sm"
+                            class="btn btn-danger btn-sm"
                             ><img
                                 src="./../icons/delete.svg"
                                 alt="delete"
@@ -135,30 +138,34 @@
                     </div>
                 </div>
                 {#each Object.entries(value["paths"]) as [path, folder]}
-                    <div class="row-item2">
-                        <span class="item-title2">{path}</span>
-                        <span class="item-subtitle2">{folder}</span>
-                        <div class="item-btn-group">
-                            <button
-                                on:click={() => {
-                                    editPathRule(key, path);
-                                }}
-                                class="item-btn btn btn-primary btn-sm"
-                                ><img
-                                    src="./../icons/edit.svg"
-                                    alt="edit"
-                                /></button
-                            >
-                            <button
-                                on:click={() => {
-                                    deletePathRule(key, path);
-                                }}
-                                class="item-btn btn btn-danger btn-sm"
-                                ><img
-                                    src="./../icons/delete.svg"
-                                    alt="delete"
-                                /></button
-                            >
+                    <div class="paths">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <div class="title2">{path}</div>
+                                <div class="subtitle2">{folder}</div>
+                            </div>
+                            <div class="col text-end">
+                                <button
+                                    on:click={() => {
+                                        editPathRule(key, path);
+                                    }}
+                                    class="btn btn-primary btn-sm"
+                                    ><img
+                                        src="./../icons/edit.svg"
+                                        alt="edit"
+                                    /></button
+                                >
+                                <button
+                                    on:click={() => {
+                                        deletePathRule(key, path);
+                                    }}
+                                    class="btn btn-danger btn-sm"
+                                    ><img
+                                        src="./../icons/delete.svg"
+                                        alt="delete"
+                                    /></button
+                                >
+                            </div>
                         </div>
                     </div>
                 {/each}
@@ -174,13 +181,16 @@
         </p>
     </div>
     <div class="box">
-        <div class="row-item">
-            <span class="item-title">URL mapping mode</span>
-            <span class="item-subtitle"
-                >Choose whether to map only the specific URL or also all the
-                URLs starting with it</span
-            >
-            <div class="item-btn-group">
+        <div class="row align-items-center">
+            <div class="col-8">
+                <div class="title">URL mapping mode</div>
+                <div class="subtitle">
+                    Choose whether to map only the specific URL or also all the
+                    URLs starting with it
+                </div>
+            </div>
+
+            <div class="col text-end">
                 <div class="dropdown">
                     <button
                         class="btn btn-primary dropdown-toggle"

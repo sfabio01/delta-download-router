@@ -59,36 +59,44 @@
     <h3>Filetype Mapping</h3>
     <div class="box">
         {#each Object.entries(types.fileTypes) as [key, value]}
-            <div class="row-item">
-                <span class="item-title capitalize"
-                    >{key}
-                    <img
-                        title={value}
-                        src="./../icons/help.svg"
-                        alt="help"
-                    /></span
-                >
-                <span class="item-subtitle"
-                    >{#if filetypeToFolderObj[key]}{filetypeToFolderObj[
-                            key
-                        ]}{:else}Rule not defined{/if}</span
-                >
-                <div class="item-btn-group">
-                    <button
-                        on:click={() => {
-                            editFiletypeRule(key);
-                        }}
-                        class="item-btn btn btn-primary btn-sm"
-                        ><img src="./../icons/edit.svg" alt="edit" /></button
-                    >
-                    <button
-                        on:click={() => deleteFiletypeRule(key)}
-                        class="item-btn btn btn-danger btn-sm"
-                        ><img
-                            src="./../icons/delete.svg"
-                            alt="delete"
-                        /></button
-                    >
+            <div class="block-item">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="title capitalize">
+                            {key}
+                            <img
+                                title={value}
+                                src="./../icons/help.svg"
+                                alt="help"
+                            />
+                        </div>
+
+                        <div class="subtitle">
+                            {#if filetypeToFolderObj[key]}{filetypeToFolderObj[
+                                    key
+                                ]}{:else}Rule not defined{/if}
+                        </div>
+                    </div>
+                    <div class="col text-end">
+                        <button
+                            on:click={() => {
+                                editFiletypeRule(key);
+                            }}
+                            class="btn btn-primary btn-sm"
+                            ><img
+                                src="./../icons/edit.svg"
+                                alt="edit"
+                            /></button
+                        >
+                        <button
+                            on:click={() => deleteFiletypeRule(key)}
+                            class="btn btn-danger btn-sm"
+                            ><img
+                                src="./../icons/delete.svg"
+                                alt="delete"
+                            /></button
+                        >
+                    </div>
                 </div>
             </div>
         {/each}

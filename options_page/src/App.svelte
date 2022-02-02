@@ -52,18 +52,22 @@
     });
 </script>
 
-<main class="main">
-    <h1>Settings</h1>
-    <div class="container1">
-        <div class="col1">
-            <DomainMappingSection {domainToFolderArr} />
-            <FiletypeMappingSection {filetypeToFolderObj} />
-        </div>
-        <div class="col1">
-            <RulesPrioritySection {priorityList} />
-            <DefaultDownloadFolderSection />
-            <div>
-                <a href="./../getstarted.html" target="_blank">Get Started</a>
+<main>
+    <div class="container-fluid">
+        <h1>Settings</h1>
+        <div class="row">
+            <div class="col-8">
+                <DomainMappingSection {domainToFolderArr} />
+                <FiletypeMappingSection {filetypeToFolderObj} />
+            </div>
+            <div class="col">
+                <RulesPrioritySection {priorityList} />
+                <DefaultDownloadFolderSection />
+                <div>
+                    <a href="./../getstarted.html" target="_blank"
+                        >Get Started</a
+                    >
+                </div>
             </div>
         </div>
     </div>
