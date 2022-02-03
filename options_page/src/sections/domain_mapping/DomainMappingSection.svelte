@@ -1,5 +1,5 @@
 <script>
-    import { objs } from "./../../stores";
+    import { options } from "./../../stores";
     import * as utils from "./../../utils";
     export let domainToFolderArr;
 
@@ -13,7 +13,7 @@
                 // DEBUG:
                 // console.log("Rule deleted: " + key);
 
-                objs.update((o) => {
+                options.update((o) => {
                     delete o[key];
                     return o;
                 });
@@ -27,20 +27,23 @@
                 path
         );
         if (yes) {
-            objs.update((o) => {
+            options.update((o) => {
                 delete o[domain].paths[path];
                 return o;
             });
-            chrome.storage.local.set({ [domain]: objs[domain] }, function () {
-                // DEBUG:
-                // console.log("Rule deleted: " + domain + path);
-            });
+            chrome.storage.local.set(
+                { [domain]: options[domain] },
+                function () {
+                    // DEBUG:
+                    // console.log("Rule deleted: " + domain + path);
+                }
+            );
         }
     }
     async function editDomainRule(key) {
         let newFolder = prompt(
             "Domain: " + key + "\nEdit Folder",
-            $objs[key].folder
+            $options[key].folder
         );
         if (!newFolder) {
             return;
@@ -50,12 +53,12 @@
             newFolder = utils.tryCorrectPath(newFolder);
         }
         if (utils.pathIsValid(newFolder)) {
-            objs.update((o) => {
+            options.update((o) => {
                 o[key].folder = newFolder;
                 return o;
             });
 
-            chrome.storage.local.set({ [key]: objs[key] }, function () {
+            chrome.storage.local.set({ [key]: options[key] }, function () {
                 // DEBUG:
                 // console.log("Rule edited: {" + key + ": " + newFolder + "}");
             });
@@ -66,7 +69,7 @@
     function editPathRule(domain, path) {
         let newFolder = prompt(
             "URL: " + domain + path + "\nEdit Folder",
-            $objs[domain].paths[path]
+            $options[domain].paths[path]
         );
 
         if (!newFolder) {
@@ -77,15 +80,18 @@
             newFolder = utils.tryCorrectPath(newFolder);
         }
         if (utils.pathIsValid(newFolder)) {
-            objs.update((o) => {
+            options.update((o) => {
                 o[domain].paths[path] = newFolder;
                 return o;
             });
 
-            chrome.storage.local.set({ [domain]: objs[domain] }, function () {
-                // DEBUG:
-                // console.log("Rule edited: {" + domain + path + ": " + newFolder + "}");
-            });
+            chrome.storage.local.set(
+                { [domain]: options[domain] },
+                function () {
+                    // DEBUG:
+                    // console.log("Rule edited: {" + domain + path + ": " + newFolder + "}");
+                }
+            );
         } else {
             alert("Invalid folder path\n" + utils.prohibitedCharsMessage);
         }
@@ -95,7 +101,7 @@
         chrome.storage.local.set({ urlMappingMode: mode }, function () {
             // DEBUG:
             // console.log("Mapping mode set to: " + mode);
-            objs.update((o) => {
+            options.update((o) => {
                 o["urlMappingMode"] = mode;
                 return o;
             });
@@ -198,9 +204,9 @@
                         id="mappingModeDropdown"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
-                        >{$objs["urlMappingMode"]
-                            ? $objs["urlMappingMode"][0].toUpperCase() +
-                              $objs["urlMappingMode"].substr(1)
+                        >{$options["urlMappingMode"]
+                            ? $options["urlMappingMode"][0].toUpperCase() +
+                              $options["urlMappingMode"].substr(1)
                             : "Select"}</button
                     >
                     <ul

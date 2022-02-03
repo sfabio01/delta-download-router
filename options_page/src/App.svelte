@@ -3,21 +3,21 @@
     import "./style.css";
     import * as types from "./types";
     import * as utils from "./utils";
-    import { objs } from "./stores";
+    import { options } from "./stores";
     import DomainMappingSection from "./sections/domain_mapping/DomainMappingSection.svelte";
     import FiletypeMappingSection from "./sections/filetype_mapping/FiletypeMappingSection.svelte";
     import RulesPrioritySection from "./sections/global_settings/RulesPrioritySection.svelte";
     import DefaultDownloadFolderSection from "./sections/global_settings/DefaultDownloadFolderSection.svelte";
     import Footer from "./sections/Footer.svelte";
     // DEBUG:
-    // $: console.log(objs);
+    // $: console.log(options);
 
     let array = [];
     let domainToFolderArr = [];
     let filetypeToFolderObj = {};
     let priorityList = ["urlToFolder", "filetypeToFolder"];
 
-    $: array = Object.entries($objs);
+    $: array = Object.entries($options);
     $: domainToFolderArr = array.filter(
         ([key, _]) =>
             !types.fileTypes.hasOwnProperty(key) &&
@@ -41,10 +41,10 @@
             result["urlMappingMode"] = "specific";
         }
         priorityList = result["priorityList"];
-        objs.set(result);
+        options.set(result);
         if (
-            !$objs["newVersionAlertViewed"] ||
-            $objs["newVersionAlertViewed"] != "1.2.0"
+            !$options["newVersionAlertViewed"] ||
+            $options["newVersionAlertViewed"] != "1.2.0"
         ) {
             chrome.storage.local.set({ newVersionAlertViewed: "1.2.0" });
             window.location = "#open-modal";

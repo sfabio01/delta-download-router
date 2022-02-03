@@ -10,4 +10,4 @@ function createOptionObject() {
     };
 }
 
-export const objs = createOptionObject();
+export const options = createOptionObject();

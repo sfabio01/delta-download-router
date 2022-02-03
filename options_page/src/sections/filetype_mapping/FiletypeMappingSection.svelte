@@ -1,5 +1,5 @@
 <script>
-    import { objs } from "./../../stores";
+    import { options } from "./../../stores";
     import * as utils from "./../../utils";
     import * as types from "./../../types";
 
@@ -12,14 +12,14 @@
                 key +
                 "\n" +
                 "Folder: " +
-                $objs[key]
+                $options[key]
         );
         if (yes) {
             chrome.storage.local.remove(key, function () {
                 // DEBUG:
                 // console.log("Rule deleted: " + key);
 
-                objs.update((o) => {
+                options.update((o) => {
                     delete o[key];
                     return o;
                 });
@@ -31,7 +31,7 @@
         // Used also for editing default download folder
         let newFolder = prompt(
             "Filetype: " + key + "\nEdit Folder",
-            $objs[key]
+            $options[key]
         );
         if (!newFolder) {
             return;
@@ -44,7 +44,7 @@
             chrome.storage.local.set({ [key]: newFolder }, function () {
                 // DEBUG:
                 // console.log("Rule edited: {" + key + ": " + newFolder + "}");
-                objs.update((o) => {
+                options.update((o) => {
                     o[key] = newFolder;
                     return o;
                 });

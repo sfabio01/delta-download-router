@@ -1,5 +1,5 @@
 <script>
-    import { objs } from "./../../stores";
+    import { options } from "./../../stores";
     import * as utils from "./../../utils";
 
     const defaultDownloadFolderKey = "defaultDownloadFolder";
@@ -8,14 +8,14 @@
         let yes = confirm(
             "Are you sure you want to delete the default download folder?\n" +
                 "Folder: " +
-                $objs[defaultDownloadFolderKey]
+                $options[defaultDownloadFolderKey]
         );
         if (yes) {
             chrome.storage.local.remove(defaultDownloadFolderKey, function () {
                 // DEBUG:
                 // console.log("Rule deleted: " + key);
 
-                objs.update((o) => {
+                options.update((o) => {
                     delete o[defaultDownloadFolderKey];
                     return o;
                 });
@@ -27,7 +27,7 @@
         // Used also for editing default download folder
         let newFolder = prompt(
             "Edit default download folder",
-            $objs[defaultDownloadFolderKey]
+            $options[defaultDownloadFolderKey]
         );
         if (!newFolder) {
             return;
@@ -42,7 +42,7 @@
                 function () {
                     // DEBUG:
                     // console.log("Rule edited: {" + defaultDownloadFolderKey + ": " + newFolder + "}");
-                    objs.update((o) => {
+                    options.update((o) => {
                         o[defaultDownloadFolderKey] = newFolder;
                         return o;
                     });
@@ -62,7 +62,7 @@
                 <div class="col-8">
                     <div class="title">Default download folder</div>
                     <div class="subtitle">
-                        {#if $objs["defaultDownloadFolder"]}{$objs[
+                        {#if $options["defaultDownloadFolder"]}{$options[
                                 "defaultDownloadFolder"
                             ]}{:else}Not defined{/if}
                     </div>
@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        {#if !$objs["defaultDownloadFolder"]}
+        {#if !$options["defaultDownloadFolder"]}
             <div
                 class="alert alert-warning"
                 style="border-radius: 8px;"
