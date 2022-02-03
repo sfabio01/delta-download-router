@@ -4,20 +4,20 @@
             <a href="#" title="Close" class="modal-close">Close</a>
             <h1>
                 <span style="font-size: xxx-large;">&#127881;</span> New Version
-                1.2.0
+                1.3.0
             </h1>
             <div>
                 <h3>What's new</h3>
                 <ul>
                     <li>
-                        <b>URL mapping mode</b><br />
-                        Now you can choose whether to map only the specific URL you
-                        added or also all the sub-URLs
+                        <b>Default domain mapping</b><br />
+                        Now you can choose to automatically create a new folder for
+                        unmapped domains
                     </li>
                     <li>
-                        <b>Domain mapping folder no more required</b><br />
-                        Now you can add URL mappings even if you don't map their
-                        domain
+                        <b>Leave a review</b><br />
+                        I look forward to hearing your opinion about Delta. Click
+                        on the "Rate this extension" button any time to leave a feedback
                     </li>
                     <li>
                         <b>Bug fixing</b>
@@ -88,9 +88,5 @@
 
     .modal-window div:not(:last-of-type) {
         margin-bottom: 15px;
-    }
-
-    small {
-        color: lightgray;
     }
 </style>

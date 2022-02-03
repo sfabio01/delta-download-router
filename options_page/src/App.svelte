@@ -1,5 +1,5 @@
 <script>
-    import ModalWindow from "./ModalWindow.svelte";
+    import ModalWindow from "./sections/ModalWindow.svelte";
     import "./style.css";
     import * as types from "./types";
     import * as utils from "./utils";
@@ -48,9 +48,9 @@
         options.set(result);
         if (
             !$options["newVersionAlertViewed"] ||
-            $options["newVersionAlertViewed"] != "1.2.0"
+            $options["newVersionAlertViewed"] != "1.3.0"
         ) {
-            chrome.storage.local.set({ newVersionAlertViewed: "1.2.0" });
+            chrome.storage.local.set({ newVersionAlertViewed: "1.3.0" });
             window.location = "#open-modal";
         }
     });

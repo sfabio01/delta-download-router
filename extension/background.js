@@ -8,7 +8,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
     // DEBUG:
     console.log(url);
 
-    chrome.storage.local.get("priorityList", async function (result) {
+    chrome.storage.local.get(["priorityList", "defaultDownloadFolder"], async function (result) {
         let priorityList = defaultPriorityList;
         let matched = false;
 
@@ -31,7 +31,6 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
         }
 
         if (!matched) {
-            let result = await chrome.storage.local.get(["defaultDownloadFolder"]);
             if (result["defaultDownloadFolder"]) {
                 suggest({ filename: result["defaultDownloadFolder"] + "/" + filename });
             } else {
@@ -56,7 +55,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
         console.log(domain);
         let path = url.split(domain)[1];
         console.log(path);
-        let result = await chrome.storage.local.get([domain, "urlMappingMode", "defaultDomainMapping"]);
+        let result = await chrome.storage.local.get([domain, "urlMappingMode", "defaultDomainMapping", "defaultDownloadFolder"]);
 
         if (result[domain]) {
             let finalFolderPath = "";
@@ -92,7 +91,12 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
             }
         }
         if (result.defaultDomainMapping == true) {
-            suggest({ filename: domain + "/" + filename });
+            if (result["defaultDownloadFolder"]) {
+                suggest({ filename: result["defaultDownloadFolder"] + "/" + domain + "/" + filename });
+            } else {
+                suggest({ filename: domain + "/" + filename });
+            }
+
             return true;
         }
 

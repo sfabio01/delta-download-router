@@ -77,9 +77,9 @@
             <div class="col">
                 <div class="title">Default domain mapping</div>
                 <div class="subtitle">
-                    Instead of using the default download folder, a new folder
-                    named as the domain is automatically created if none of the
-                    above rules match
+                    A new folder named as the domain is automatically created
+                    inside the default download folder if none of the above
+                    rules match
                 </div>
             </div>
 

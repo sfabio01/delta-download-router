@@ -91,9 +91,9 @@
                 style="border-radius: 8px;"
                 role="alert"
             >
-                It's important you set the default download folder in case no
-                rule matches. If you don't, the default folder will be the one
-                set in the browser settings.
+                You can set the default download folder in case no rule matches.
+                If you don't, the default folder will be the one set in the
+                browser settings.
             </div>
         {/if}
     </div>
