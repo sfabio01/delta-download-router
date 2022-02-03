@@ -19,9 +19,6 @@
                         I look forward to hearing your opinion about Delta. Click
                         on the "Rate this extension" button any time to leave a feedback
                     </li>
-                    <li>
-                        <b>Bug fixing</b>
-                    </li>
                 </ul>
             </div>
         </div>
