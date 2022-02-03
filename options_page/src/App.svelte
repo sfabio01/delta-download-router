@@ -9,6 +9,7 @@
     import RulesPrioritySection from "./sections/global_settings/RulesPrioritySection.svelte";
     import DefaultDownloadFolderSection from "./sections/global_settings/DefaultDownloadFolderSection.svelte";
     import Footer from "./sections/Footer.svelte";
+    import OtherSection from "./sections/OtherSection.svelte";
     // DEBUG:
     // $: console.log(options);
 
@@ -66,11 +67,7 @@
             <div class="col">
                 <RulesPrioritySection {priorityList} />
                 <DefaultDownloadFolderSection />
-                <div>
-                    <a href="./../getstarted.html" target="_blank"
-                        >Get Started</a
-                    >
-                </div>
+                <OtherSection />
             </div>
         </div>
     </div>
