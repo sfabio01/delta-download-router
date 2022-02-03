@@ -9,12 +9,22 @@
             });
         });
     }
+    function setDefaultDomainMapping() {
+        options.update((o) => {
+            o["defaultDomainMapping"] = !o["defaultDomainMapping"];
+            return o;
+        });
+        chrome.storage.local.set({
+            defaultDomainMapping: $options["defaultDomainMapping"],
+        });
+    }
 </script>
 
 <main>
     <div class="box">
+        <!-- URL Mapping Mode -->
         <div class="row align-items-center">
-            <div class="col-8">
+            <div class="col">
                 <div class="title">URL mapping mode</div>
                 <div class="subtitle">
                     Choose whether to map only the specific URL or also all the
@@ -22,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="col text-end">
+            <div class="col-3 text-end">
                 <div class="dropdown">
                     <button
                         class="btn btn-primary dropdown-toggle"
@@ -59,6 +69,30 @@
                             >
                         </li>
                     </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Default Domain Mapping -->
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="title">Default domain mapping</div>
+                <div class="subtitle">
+                    Instead of using the default download folder, a new folder
+                    named as the domain is automatically created if none of the
+                    above rules match
+                </div>
+            </div>
+
+            <div class="col-2 text-end">
+                <div class="form-switch">
+                    <input
+                        style="width: 40px; height: 20px;"
+                        class="form-check-input"
+                        type="checkbox"
+                        id="defaultDomainMappingSwitch"
+                        on:change={setDefaultDomainMapping}
+                        bind:checked={$options["defaultDomainMapping"]}
+                    />
                 </div>
             </div>
         </div>

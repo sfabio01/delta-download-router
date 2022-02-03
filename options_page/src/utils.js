@@ -47,4 +47,4 @@ export const priorityValueTextMap = {
     "filetypeToFolder": "Filetype Mapping",
 }
 
-export const specialKeys = ["priorityList", "defaultDownloadFolder", "urlMappingMode", "newVersionAlertViewed"];
+export const specialKeys = ["priorityList", "defaultDownloadFolder", "urlMappingMode", "defaultDomainMapping", "newVersionAlertViewed"];

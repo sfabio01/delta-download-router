@@ -40,6 +40,9 @@
         if (result["urlMappingMode"] == null) {
             result["urlMappingMode"] = "specific";
         }
+        if (result["defaultDomainMapping"] == null) {
+            result["defaultDomainMapping"] = false;
+        }
         priorityList = result["priorityList"];
         options.set(result);
         if (

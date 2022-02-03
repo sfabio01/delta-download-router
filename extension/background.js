@@ -56,7 +56,7 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
         console.log(domain);
         let path = url.split(domain)[1];
         console.log(path);
-        let result = await chrome.storage.local.get([domain, "urlMappingMode"]);
+        let result = await chrome.storage.local.get([domain, "urlMappingMode", "defaultDomainMapping"]);
 
         if (result[domain]) {
             let finalFolderPath = "";
@@ -90,6 +90,10 @@ chrome.downloads.onDeterminingFilename.addListener(function (downloadItem, sugge
 
                 return true;
             }
+        }
+        if (result.defaultDomainMapping == true) {
+            suggest({ filename: domain + "/" + filename });
+            return true;
         }
 
         // DEBUG:
